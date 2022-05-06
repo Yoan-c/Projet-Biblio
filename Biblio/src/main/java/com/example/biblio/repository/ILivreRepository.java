@@ -12,12 +12,10 @@ import java.util.List;
 
 @Repository
 public interface ILivreRepository extends JpaRepository<Livre, String> {
-    @Query("SELECT l from Livre l join l.auteurs a where a.nom like :x or a.prenom like :x")
-    public List<Livre> searchByAuteurs(@Param("x")String auteur);
-    @Query("SELECT l from Livre l join l.auteurs a where a.nom = :n and a.prenom = :p")
-    public List<Livre> searchByAuteurs(@Param("n")String nom, @Param("p") String prenom);
 
-    @Query("SELECT l from Livre l join l.genres g where g.nom like :x")
-    public List<Livre> searchByGenre(@Param("x")String genre);
 
+    @Query("SELECT l from Livre l join l.genres g join l.auteurs a join l.langue la where g.nom like :genre and a.nom like :name and " +
+            "a.prenom like :prenom and l.titre like :titre and la.nom like :nomLangue")
+    public List<Livre> search(@Param("genre")String genre, @Param("name")String name, @Param("prenom")String prenom,
+                              @Param("titre")String titre, @Param("nomLangue")String langue);
 }

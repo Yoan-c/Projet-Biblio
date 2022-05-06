@@ -9,37 +9,37 @@ import com.example.biblio.repository.ILivreRepository;
 import com.example.biblio.service.LivreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @RestController
 public class MainController {
-    @Autowired
-    ILivreRepository livre;
-    @Autowired
-    IAuteurRepository auteurs;
+
     @Autowired
     private LivreService livreService;
 
     @Autowired
     private IExemplaireRepository exe;
 
+    Logger log = Logger.getLogger("");
+
     @GetMapping("/")
-    public List<Exemplaire> test(){
-        Logger log = Logger.getLogger("");
-      //  List<Livre> lstLivre = livre.findAll();
-        //List<Auteur> lstAuteurs = auteurs.findByName("Cole");
-        //List<Livre> lstL = livre.searchByAuteurs("Cole", "Patrice");
-      //  List<Livre> lstLivre = livreService.getBookByAuthorName("Cole");
+    public List<Exemplaire> getBook(){
+
         List<Exemplaire> lstLivre = livreService.getBook();
-        // Exemplaire ex = exe.getExemplaireByIsbn(lstLivre.get(0));
-       // List<Livre> lstLivre = livreService.getBookByGenre("Manga");
-     //   log.info("ici"+ ex);
-       /* for(Livre l:lstLivre){
-            System.out.println("livre genre "+l.getGenres()+" isbn "+l.getIsbn());
-        }*/
+
+        return lstLivre;
+    }
+    @GetMapping("/search")
+    public List<Exemplaire> searchBook(@RequestParam Map<String, String> info){
+
+        List<Exemplaire> lstLivre = livreService.search(info);
+        log.info("recherche "+ lstLivre);
+
         return lstLivre;
     }
 }

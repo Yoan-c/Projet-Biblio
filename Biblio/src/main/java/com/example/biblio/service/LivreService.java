@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @Service
@@ -18,6 +19,12 @@ public class LivreService {
     @Autowired
     private ExemplaireService exemplaireService;
 
+    @Autowired
+    private AuteurService auteurService;
+
+    /*
+    fonction qui retourne tout les livres et ses informations
+     */
     public List<Exemplaire> getBook(){
         List<Livre> lstLivre = livresRepository.findAll();
         List<Exemplaire> lstExemplaire = new ArrayList<Exemplaire>();
@@ -28,29 +35,70 @@ public class LivreService {
         return lstExemplaire;
     }
 
-    public List<Livre> getBookByAuthorName(String name){
-        int indexSpace = name.indexOf(" ");
-        String nom = "";
-        String prenom = "";
-        List<Livre> livres;
-        if(indexSpace > 0){
-            nom = name.substring(0, indexSpace);
-            prenom = name.substring(indexSpace+1);
-            livres = livresRepository.searchByAuteurs(nom, prenom);
-        }
-        livres = livresRepository.searchByAuteurs(name);
-        Logger log = Logger.getLogger("");
-         for(Livre l:livres){
-             Exemplaire ex =  exemplaireService.getExemplaireByIsbn(l);
 
-             log.info("exemplaire "+ ex);
-        //    System.out.println("livre genre "+l.getGenres()+" isbn "+l.getIsbn());
-        }
 
-         return livres;
+    /*
+        fontion parametre : map d'information de recherche ex "search.get("title")
+        et retour une liste de livre avec toute les informations (stock, genre, auteur etc...)
+     */
+    public List<Exemplaire> search(Map<String, String> search){
+        String tagSearch = "%";
+        String titre = tagSearch;
+        String nom = tagSearch;
+        String prenom = tagSearch;
+        List<String> auteur = new ArrayList<>();
+        String genre = tagSearch;
+        String langue = tagSearch;
+
+        if (!search.isEmpty()){
+            if (search.get("titre") != null)
+                titre = search.get("titre");
+            titre += tagSearch;
+            if (search.get("auteur")!= null)
+                auteur = auteurService.getNameFormat(search.get("auteur"));
+            else {
+                auteur.add(tagSearch);
+                auteur.add(tagSearch);
+            }
+            if (search.get("genre") != null)
+                genre = search.get("genre");
+            genre += tagSearch;
+            if (search.get("langue") != null)
+                langue = search.get("langue");
+            langue += tagSearch;
+            List<Livre> livres = livresRepository.search(genre, auteur.get(0)+"%", auteur.get(1)+"%", titre, langue);
+            List<Livre> newLstLivre = getUniqueLivre(livres);
+            List<Exemplaire> lstExemplaire = new ArrayList<>();
+            for (Livre l:newLstLivre){
+                lstExemplaire.add(exemplaireService.getExemplaireByIsbn(l));
+            }
+
+            return lstExemplaire;
+        }
+        return getBook();
     }
 
-    public List<Livre> getBookByGenre(String genre){
-        return livresRepository.searchByGenre(genre);
+    /*
+     fonction qui prend une liste de livre en parametre
+     et retourne une liste de livre sans doublon
+     */
+    public List<Livre> getUniqueLivre(List<Livre> livres){
+        List<Livre> lstLivre = new ArrayList<>();
+        int i = 0;
+        boolean find;
+        int size = livres.size();
+        int j = 0;
+        for (i = 0 ; i < size ; i++){
+            find = false;
+            for(j = 0; j < lstLivre.size(); j++){
+                if (livres.get(i).getIsbn().equals(lstLivre.get(j).getIsbn())){
+                    find = true;
+                }
+            }
+            if (!find){
+                lstLivre.add(livres.get(i));
+            }
+        }
+        return lstLivre;
     }
 }
