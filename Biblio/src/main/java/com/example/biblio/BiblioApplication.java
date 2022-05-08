@@ -5,6 +5,7 @@ import com.example.biblio.repository.ILivreRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Date;
 
@@ -12,9 +13,7 @@ import java.util.Date;
 public class BiblioApplication {
 
     public static void main(String[] args) {
-
         ApplicationContext ctx = SpringApplication.run(BiblioApplication.class, args);
-        ILivreRepository livre = ctx.getBean(ILivreRepository.class);
     }
 
 }
