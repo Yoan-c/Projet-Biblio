@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -31,6 +32,19 @@ public class UtilisateurService implements UserDetailsService  {
         }
 
         return new MyUserDetails(user);
+    }
+
+    public boolean createUser(Map<String, String> info) {
+        if (info.get("nom") == null || info.get("mdp") == null || info.get("email") == null || info.get("prenom") == null
+        || info.get("confirmMdp") == null || !info.get("mdp").equals(info.get("confirmMdp"))) {
+            return false;
+        }
+        Utilisateur user = userRepository.getUtilisateurByMail(info.get("email"));
+        if(user != null)
+            return false;
+        Utilisateur newUser = new Utilisateur(info.get("email"), info.get("nom"), info.get("prenom"), info.get("mdp"));
+        userRepository.save(newUser);
+        return true;
     }
 
 }

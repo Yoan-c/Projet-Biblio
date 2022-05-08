@@ -66,4 +66,15 @@ public class MainController {
 
         return "ok";
     }
+
+    @GetMapping("/create")
+    public String createUser(@RequestParam Map<String, String> info){
+
+        boolean create = userService.createUser(info);
+        if(!create){
+            return "KO";
+        }
+
+        return "creation";
+    }
 }

@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,6 +28,14 @@ public class Utilisateur implements Serializable{
     private String nom;
     private String prenom;
     private String mdp;
-    private String role;
-    private String sel;
+
+
+    public Utilisateur(String email, String nom, String prenom, String mdp) {
+        this.email = email;
+        this.nom = nom;
+        this.prenom = prenom;
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String formatMdp = encoder.encode(mdp);
+        this.mdp = formatMdp;
+    }
 }
