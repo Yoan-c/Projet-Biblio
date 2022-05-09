@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface IPretRepository extends JpaRepository<Pret, Long> {
-    @Query("select p from Pret p join p.user u join p.exemplaire ex where u.id = :x")
-    public List<Pret> getPretByUserId(@Param("x")Long id);
+    @Query("select p from Pret p join p.user u join p.exemplaire ex where u.email = :x")
+    public List<Pret> getPretByUserMail(@Param("x")String email);
 }

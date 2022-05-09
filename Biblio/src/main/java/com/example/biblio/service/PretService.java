@@ -15,8 +15,8 @@ public class PretService {
     private IPretRepository pretRepository;
     Logger log = Logger.getLogger("");
 
-    public void getPretByUser(String id){
-      List<Pret> pret =  pretRepository.getPretByUserId(Long.parseLong(id));
+    public void getPretByUser(String mail){
+      List<Pret> pret =  pretRepository.getPretByUserMail(mail);
       log.info("pret "+ pret);
     }
 }
