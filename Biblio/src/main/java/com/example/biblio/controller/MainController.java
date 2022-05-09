@@ -54,13 +54,20 @@ public class MainController {
     }
 
     @GetMapping("/pret")
-    public String pret(@RequestParam Map<String, String> info){
+    public List<Pret> pret(@RequestParam Map<String, String> info){
         // recuperation de l'id
         MyUserDetails infoUser = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        pretService.getPretByUser(infoUser.getUsername());
-     //   log.info("recherche "+ pret);
-
-        return "ok";
+        List<Pret> pret = pretService.getPretByUser(infoUser.getUsername());
+        return pret;
+    }
+    @PutMapping("/pret")
+    public String continuePret(@RequestParam String idPret){
+        // recuperation de l'id
+        MyUserDetails infoUser = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        boolean renouvellement = pretService.updatePret(infoUser.getUsername(), idPret);
+        if (renouvellement)
+            return "ok";
+        return "KO";
     }
 
     @GetMapping("/create")

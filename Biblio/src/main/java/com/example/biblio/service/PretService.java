@@ -15,8 +15,26 @@ public class PretService {
     private IPretRepository pretRepository;
     Logger log = Logger.getLogger("");
 
-    public void getPretByUser(String mail){
+    public List<Pret> getPretByUser(String mail){
       List<Pret> pret =  pretRepository.getPretByUserMail(mail);
-      log.info("pret "+ pret);
+      return pret;
+    }
+
+    public boolean updatePret(String mail, String idPret){
+        List<Pret> pret =  pretRepository.getPretByUserMail(mail);
+        if (pret == null || pret.isEmpty()){
+            return false;
+        }
+        int size = pret.size();
+        for (int i = 0; i < size ; i++) {
+            if (pret.get(i).getId().toString().equals(idPret)) {
+                if (pret.get(i).getRenouvele() == false) {
+                    pret.get(i).setRenouvele(true);
+                    pretRepository.save(pret.get(i));
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
