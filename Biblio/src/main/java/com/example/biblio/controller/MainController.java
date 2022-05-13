@@ -12,11 +12,13 @@ import com.example.biblio.service.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -104,5 +106,13 @@ public class MainController {
             // modif ok
             return resultat;
         }
+    }
+    @GetMapping("/batch")
+    public List<HashMap<String, String>> batch(@RequestParam String username, @RequestParam String password){
+
+        log.info("entre ici ");
+        List<HashMap<String, String>> pret = pretService.relancePret(username, password);
+        log.info("resultat batch "+pret);
+        return pret;
     }
 }
