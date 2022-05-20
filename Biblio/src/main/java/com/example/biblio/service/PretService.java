@@ -3,16 +3,12 @@ package com.example.biblio.service;
 import com.example.biblio.entity.Pret;
 import com.example.biblio.repository.IPretRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.text.SimpleDateFormat;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
 
 @Service
 public class PretService {
@@ -34,7 +30,6 @@ public class PretService {
         for (int i = 0; i < size ; i++) {
             if (pret.get(i).getId().toString().equals(idPret)) {
                 if (pret.get(i).getRenouvele() == false) {
-                    // renouveller la date ajouter une semaine
                     pret.get(i).setDateFin(new Date(pret.get(i).getDateFin().getTime() + (7*(1000*60*60*24))));
                     pret.get(i).setRenouvele(true);
                     pretRepository.save(pret.get(i));
