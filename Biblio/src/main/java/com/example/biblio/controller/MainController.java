@@ -39,19 +39,14 @@ public class MainController {
 
     @GetMapping("/")
     public List<Exemplaire> getBook(){
-
         List<Exemplaire> lstLivre = livreService.getBook();
-
         return lstLivre;
     }
     @GetMapping("/search")
     public List<Exemplaire> searchBook(@RequestParam Map<String, String> info){
       // recuperation de l'id
         MyUserDetails req = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        log.info("recherche info "+ req.getUsername());
         List<Exemplaire> lstLivre = livreService.search(info);
-        log.info("recherche "+ lstLivre);
-
         return lstLivre;
     }
 
@@ -79,7 +74,6 @@ public class MainController {
         if(!create){
             return "KO";
         }
-
         return "creation";
     }
 
@@ -109,10 +103,7 @@ public class MainController {
     }
     @GetMapping("/batch")
     public List<HashMap<String, String>> batch(@RequestParam String username, @RequestParam String password){
-
-        log.info("entre ici ");
         List<HashMap<String, String>> pret = pretService.relancePret(username, password);
-        log.info("resultat batch "+pret);
         return pret;
     }
 }

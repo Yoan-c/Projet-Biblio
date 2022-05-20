@@ -19,7 +19,6 @@ public class PretService {
 
     @Autowired
     private IPretRepository pretRepository;
-    Logger log = Logger.getLogger("");
 
     public List<Pret> getPretByUser(String mail){
       List<Pret> pret =  pretRepository.getPretByUserMail(mail);
@@ -49,10 +48,6 @@ public class PretService {
 
         List<Pret> pret = pretRepository.getAllByDate(new Date());
         List<HashMap<String, String>> relanceP = new ArrayList<>();
-        List<Integer> test = new ArrayList<>();
-     //   BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-       // String mdp2 = encoder.encode("admin");
-        //mdp = encoder.encode(mdp);
         String mdp2 = "admin";
         if(!username.equals("admin") || !mdp2.equals(mdp)){
             relanceP.add(0, new HashMap<>(){});

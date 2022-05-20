@@ -5,16 +5,13 @@ import com.example.biblio.repository.IUtilisateurRepository;
 import com.example.biblio.security.MyUserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,19 +29,26 @@ public class UtilisateurService implements UserDetailsService  {
         Utilisateur user = userRepository.getUtilisateurByMail(mail);
 
         if (user == null) {
-            throw new UsernameNotFoundException("Could not find user");
+            throw new UsernameNotFoundException("User not found");
         }
 
         return new MyUserDetails(user);
     }
 
     public boolean createUser(Map<String, String> info) {
+        boolean isMatch;
+
+        pattern = Pattern.compile("^[\\w\\.]{3,20}@([\\w-]{2,20}\\.)[\\w-]{2,4}$");
+        matcher = pattern.matcher(info.get("email"));
+        isMatch = matcher.matches();
         if (info.get("nom") == null || info.get("mdp") == null || info.get("email") == null || info.get("prenom") == null
         || info.get("confirmMdp") == null || !info.get("mdp").equals(info.get("confirmMdp"))) {
             return false;
         }
         Utilisateur user = userRepository.getUtilisateurByMail(info.get("email"));
         if(user != null)
+            return false;
+        if(!isMatch)
             return false;
         Utilisateur newUser = new Utilisateur(info.get("email"), info.get("nom"), info.get("prenom"), info.get("mdp"));
         userRepository.save(newUser);
@@ -55,12 +59,10 @@ public class UtilisateurService implements UserDetailsService  {
         Utilisateur user = userRepository.getUtilisateurByMail(email);
         return user;
     }
-
-
-
+    public void delUser(Utilisateur user){
+         userRepository.deleteById(user.getId());
+    }
     public String updateUser(Map<String, String> infoUser, String mail){
-
-
         if (!verifData(infoUser.get("nom")) || !verifData(infoUser.get("prenom")) || !verifData(infoUser.get("mail")))
             return "0;Erreur : Vérifier les champs avant de valider";
 
@@ -68,14 +70,8 @@ public class UtilisateurService implements UserDetailsService  {
         if (user == null)
             return "0;Erreur : Utilisateur non trouvé";
 
-        if (verifData(infoUser.get("nom")))
-            user.setNom(infoUser.get("nom"));
-        else
-            return "0;Erreur : Vérifier le nom";
-        if (verifData(infoUser.get("prenom")))
-            user.setPrenom(infoUser.get("prenom"));
-        else
-            return "0;Erreur : Vérifier le prenom";
+        user.setNom(infoUser.get("nom"));
+        user.setPrenom(infoUser.get("prenom"));
         if(verifData(infoUser.get("mdp")) && verifData(infoUser.get("confirmMdp"))){
             if (infoUser.get("mdp").equals(infoUser.get("confirmMdp"))){
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -89,7 +85,6 @@ public class UtilisateurService implements UserDetailsService  {
             return "0;Erreur : Veuillez remplir le mot de passe et la confirmation";
         if (verifData(infoUser.get("mail")) && !infoUser.get("mail").equals(mail)){
             boolean isMatch;
-
             pattern = Pattern.compile("^[\\w\\.]{3,20}@([\\w-]{2,20}\\.)[\\w-]{2,4}$");
             matcher = pattern.matcher(infoUser.get("mail"));
             isMatch = matcher.matches();
@@ -102,7 +97,6 @@ public class UtilisateurService implements UserDetailsService  {
             }
             else
                 return "0;Erreur : Format d'email invalid";
-
         }
         userRepository.save(user);
         return "1;Votre compte à été modifié";
