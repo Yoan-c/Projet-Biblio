@@ -106,4 +106,14 @@ public class MainController {
         List<HashMap<String, String>> pret = pretService.relancePret(username, password);
         return pret;
     }
+
+    @GetMapping("/stats")
+    public void statsLend(){
+        // recuperation de l'id
+        // MyUserDetails req = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        // List<Exemplaire> lstLivre = livreService.search(info);
+        String t = pretService.getStats();
+        log.info("statsLend "+ t);
+        return ;
+    }
 }

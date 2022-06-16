@@ -16,4 +16,7 @@ public interface IPretRepository extends JpaRepository<Pret, Long> {
 
     @Query("select p from Pret p join p.user u join p.exemplaire ex where p.dateFin < :x")
     public List<Pret> getAllByDate(@Param("x") Date d);
+
+    @Query("select p from Pret p join p.user u join p.exemplaire ex")
+    public List<Pret> getAllPret();
 }
