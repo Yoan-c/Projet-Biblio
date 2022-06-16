@@ -1,23 +1,14 @@
 package com.example.biblio.controller;
 
 import com.example.biblio.entity.*;
-import com.example.biblio.repository.IAuteurRepository;
-import com.example.biblio.repository.IExemplaireRepository;
-import com.example.biblio.repository.ILivreRepository;
-import com.example.biblio.repository.IPretRepository;
 import com.example.biblio.security.MyUserDetails;
 import com.example.biblio.service.LivreService;
 import com.example.biblio.service.PretService;
 import com.example.biblio.service.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
-import java.net.http.HttpHeaders;
-import java.net.http.HttpRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,17 +94,12 @@ public class MainController {
     }
     @GetMapping("/batch")
     public List<HashMap<String, String>> batch(@RequestParam String username, @RequestParam String password){
-        List<HashMap<String, String>> pret = pretService.relancePret(username, password);
-        return pret;
+        return pretService.relancePret(username, password);
     }
 
     @GetMapping("/stats")
-    public void statsLend(){
-        // recuperation de l'id
-        // MyUserDetails req = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        // List<Exemplaire> lstLivre = livreService.search(info);
-        String t = pretService.getStats();
-        log.info("statsLend "+ t);
-        return ;
+    public Map<String, Object> statsLend(){
+        Map<String, Object> lstStat = pretService.getStats();
+        return lstStat;
     }
 }

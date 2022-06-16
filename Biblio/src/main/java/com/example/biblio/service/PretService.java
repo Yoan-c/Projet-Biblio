@@ -1,16 +1,14 @@
 package com.example.biblio.service;
 
-import com.example.biblio.entity.Exemplaire;
 import com.example.biblio.entity.Livre;
 import com.example.biblio.entity.Pret;
 import com.example.biblio.functions.format.Format;
+import com.example.biblio.functions.stats.Stats;
 import com.example.biblio.repository.IPretRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.LiveBeansView;
 import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Logger;
 
 @Service
 public class PretService {
@@ -69,7 +67,7 @@ public class PretService {
         return relanceP;
     }
 
-    public String getStats(){
+    public Map<String, Object> getStats(){
         Format f = new Format();
         List<Pret> lstPret = pretRepository.getAllPret();
         Map<String, Object> lstStat = new HashMap<>();
@@ -77,22 +75,21 @@ public class PretService {
         List<Map<String, String>> lstGenre = new ArrayList<Map<String, String>>();
         List<Map<String, String>> lstEditeur = new ArrayList<Map<String, String>>();
         List<Map<String, String>> lstLivre = new ArrayList<Map<String, String>>();
-        Logger log = Logger.getLogger("");
         int total = lstPret.size();
         for (int i = 0 ; i < total; i++) {
-            log.info("pret : "+i+ " -> "+ lstPret.get(0).getExemplaire().getIsbn());
             Livre book = lstPret.get(i).getExemplaire().getIsbn();
             lstAuteur = f.FormatAuteur(book, lstAuteur, total);
             lstGenre = f.FormatGenre(book, lstGenre, total);
             lstEditeur = f.FormatEditeur(book, lstEditeur, total);
             lstLivre = f.FormatTitle(book, lstLivre, total);
-            log.info("lstLivre list "+ lstLivre);
         }
         lstStat.put("total",total);
         lstStat.put("auteur",lstAuteur);
         lstStat.put("genre",lstGenre);
         lstStat.put("editeur",lstEditeur);
         lstStat.put("livre",lstLivre);
-        return "";
+        Stats stats = new Stats();
+        lstStat = stats.calcStat(lstStat);
+        return lstStat;
     }
 }
