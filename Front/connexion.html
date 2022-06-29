@@ -1,0 +1,76 @@
+<html lang="fr">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Home</title>
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/styles-responsive.css" />
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="./"><img alt="logo" src="img/logo.png"></a>
+        </div>
+        <nav>
+            <div id="menu" class="img_menu">
+                <img src="img/hamburger-menu-icon-transparent-21.jpg" alt="logo" width="45px" />
+            </div>
+            <div class="top_menu" id="top_menu">
+                <div class="left_menu">
+                    <div class="left_m">
+                        <div class="btn-black btn_plivre">
+                            <a class="" href="./book.html">Parcourir les livres</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="right_menu">
+                    <div class="right_m">
+                        <div class="btn-black btn-cmpt">
+                            <a href="./create_account.html">Créer un compte</a>
+                        </div>
+                        <div class="btn-black btn-co">
+                            <a href="./connexion.html">Se connecter</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container_connect">
+        <div id="err_connect" class="error_co">
+        </div>
+        <form id="form_connect" class="form_connect" method="post" action="./book.html" name="formConnect">
+            <div class="label_form_co">
+                <label for="mail" class="id_email_co"> E-mail :</label>
+                <input id="mail" type="text" name="username" />
+            </div>
+            <div class="label_form_co">
+                <label for="password" class="id_mdp_co"> Mot de passe :</label>
+                <input id="password" type="password" name="password" />
+            </div>
+            <div class="label_form_co btn_form_co">
+                <input type="submit" class="link" id="btnFormConnect" name="connexion" value="Connexion" />
+            </div>
+
+        </form>
+    </main>
+    <script type="text/javascript" src="./js/script.js"></script>
+    <script type="text/javascript" src="./js/connexion.js"></script>
+
+
+       <!--  <script type="text/javascript" src="./js/script_form.js"></script>
+
+        <script type="text/javascript" src="./js/ajax.js"></script>
+        <script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous"></script>
+  -->
+
+</body>
+
+</html>
