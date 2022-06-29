@@ -54,7 +54,6 @@ public class MainController {
     @Autowired
     UtilisateurService userService;
     @Autowired
-   // @Qualifier("authenticationManager")
     private AuthenticationManager authManager;
 
     Logger log = Logger.getLogger("");
@@ -83,66 +82,6 @@ public class MainController {
         resp.setStatus(HttpStatus.OK.value());
         return mapper.writeValueAsString(ret);
     }
-/*
-    @PostMapping("/connexion")
-    public String v2Login(@RequestParam Map<String, String> info , HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, JsonProcessingException {
-        List<Map<String, String>> ret = new ArrayList<>();
-        Map<String, String> retM= new HashMap<>();
-        ObjectMapper mapper = new ObjectMapper();
-        HttpSession session = req.getSession();
-        try {
-            log.info("info : "+ info);
-            String mail = info.get("username");
-            String mdp = info.get("password");
-            log.info("info2 : "+ info);
-            req.login(mail,mdp);
-            log.info("info3 : "+ info);
-            UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(mail,mdp);
-            authReq.setDetails(new WebAuthenticationDetails(req));
-            Authentication auth = authManager.authenticate(authReq);
-            SecurityContext sc = SecurityContextHolder.getContext();
-            sc.setAuthentication(auth);
-            MyUserDetails infoUser = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            log.info("info user : "+ infoUser);
-            session = req.getSession(true);
-            session.setAttribute("LOGGED_IN_USER", true);
-          /*  Cookie cookie = new Cookie("JSESSIONID",session.getId());
-            resp.addCookie(cookie);
-           */
-            //MyUserDetails infoUser = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-       //     log.info("header : "+ session.getAttribute("LOGGED_IN_USER"));
-/*
-            resp.setHeader("Access-Control-Allow-Origin", "*");
-            resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            resp.setHeader("Access-Control-Max-Age", "3600");
-            resp.setHeader("Access-Control-Allow-Headers", "authorization, content-type, xsrf-token");
-            resp.addHeader("Access-Control-Expose-Headers", "xsrf-token");
-  */          /*
-            cookie.setSecure(true);
-            cookie.setHttpOnly(true);
-            cookie.setPath("/");
-            */
-  /*      } catch(ServletException ex) {
-// fail to authenticate
-            log.info("header : "+ session.getAttribute("LOGGED_IN_USER"));
-            if (session.getAttribute("LOGGED_IN_USER") != null &&
-                    session.getAttribute("LOGGED_IN_USER").equals(true)){
-                retM.put("response", "sucess");
-                ret.add(retM);
-                return mapper.writeValueAsString(ret);
-            }
-
-            retM.put("response", "failed");
-            ret.add(retM);
-            return mapper.writeValueAsString(ret);
-        }
-        retM.put("response", "sucess");
-        ret.add(retM);
-        return mapper.writeValueAsString(ret);
-    }
-
-    */
     @GetMapping("/deconnexion")
     public String deconnexion(HttpServletRequest req, HttpServletResponse resp) throws JsonProcessingException, ServletException {
         List<Map<String, String>> ret = new ArrayList<>();
@@ -159,10 +98,8 @@ public class MainController {
     public String  getBook(HttpServletResponse resp) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         String jsonInString = mapper.writeValueAsString(livreService.getBook());
-        //JSONObject jsonObject = new JSONObject(livreService.getBook());
         resp.setStatus(200);
         resp.setContentType("text/x-json;charset=UTF-8");
-        resp.setHeader("Cache-Control", "no-cache");
         return jsonInString;
     }
     @GetMapping("/search")
