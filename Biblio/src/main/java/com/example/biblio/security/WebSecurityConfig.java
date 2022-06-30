@@ -59,8 +59,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService());
         authProvider.setPasswordEncoder(passwordEncoder());
-        Logger log = Logger.getLogger("");
-        log.info("t "+authProvider);
         return authProvider;
     }
 
@@ -105,15 +103,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-    private void loginSuccessHandler(
+        private void loginSuccessHandler(
             HttpServletRequest request,
             HttpServletResponse response,
             Authentication authentication) throws IOException {
 
         response.setStatus(HttpStatus.OK.value());
         objectMapper.writeValue(response.getWriter(), "Yayy you logged in!");
-        Logger log =  Logger.getLogger("");
-        log.info("test connection");
     }
 
 }

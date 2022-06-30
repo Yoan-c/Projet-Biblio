@@ -1,4 +1,3 @@
-
 window.onload = () => {
     /* form connexion */
     let btnConnect = document.getElementById("btnFormConnect");

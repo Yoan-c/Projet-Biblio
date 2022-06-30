@@ -43,8 +43,6 @@ public class LivreService {
     public List<Exemplaire> search(Map<String, String> search){
         String tagSearch = "%";
         String titre = tagSearch;
-        String nom = tagSearch;
-        String prenom = tagSearch;
         List<String> auteur = new ArrayList<>();
         String genre = tagSearch;
         String langue = tagSearch;

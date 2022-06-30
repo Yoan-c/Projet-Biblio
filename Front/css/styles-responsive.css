@@ -1,38 +1,42 @@
 @media screen and (min-width: 701px) {
+
     /*
     header
     */
-    header{
+    header {
         justify-content: flex-start;
     }
-    .img_menu{
+
+    .img_menu {
         display: none;
     }
-    nav{
+
+    nav {
         flex-grow: 1;
     }
 
-    .top_menu{
+    .top_menu {
         transform: none;
         position: relative;
-        top : auto;
+        top: auto;
         width: 100%;
         display: flex;
         justify-content: space-between;
     }
 
-    .left_menu{
+    .left_menu {
         margin-left: 30px;
     }
-    .left_m{
+
+    .left_m {
         display: flex;
     }
 
-    .btn-black{
+    .btn-black {
         background-color: black;
         width: 115px;
         margin: 5px;
-        color : white;
+        color: white;
         height: 45px;
         border: none;
         border-radius: 8px;
@@ -41,32 +45,38 @@
         justify-content: center;
         align-items: center;
     }
-    .btn_plivre{
+
+    .btn_plivre {
         margin-right: 20px;
     }
 
-    .right_m{
+    .right_m {
         display: flex;
     }
-    .btn-co{
+
+    .btn-co {
         margin-right: 10px;
     }
-    .active{
+
+    .active {
         color: #028586;
         text-decoration: none;
     }
-    .welcome{
+
+    .welcome {
         font-size: 20px;
     }
+
     /*
     liste livre
      */
-    .content_book{
+    .content_book {
         display: flex;
         flex-wrap: wrap;
         justify-content: flex-start;
     }
-    .card_book{
+
+    .card_book {
         display: flex;
         flex-direction: column;
         width: 150px;
@@ -74,62 +84,74 @@
         align-self: flex-start;
         margin: 15px;
         padding: 10px;
+        justify-content: space-between;
     }
-    .left_card{
+
+    .left_card {
         display: flex;
         justify-content: center;
         flex-direction: row;
     }
-    .right_card{
+
+    .right_card {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-content: space-around;
 
     }
+
     .right_card p {
         text-align: center;
         margin: 5px 0;
     }
-    .right_card button{
-       margin: 20px auto;
+
+    .right_card button {
+        margin: 20px auto;
     }
-    .hide{
+
+    .hide {
         display: none;
     }
-    .btn_info_book{
+
+    .btn_info_book {
         font-weight: bold;
     }
 
     /*
     modal
     */
-    .center_modal{
+    .center_modal {
         grid-template-columns: 150px auto;
         grid-template-rows: 250px;
     }
-    .left_modal img{
+
+    .left_modal img {
         width: 150px;
     }
-    .modal_book_content{
+
+    .modal_book_content {
         background-color: white;
         margin: 120px auto;
-        border : 1px solid #888;
+        border: 1px solid #888;
         width: 586px;
         height: 80%;
     }
-    .right_modal{
+
+    .right_modal {
         font-size: 12px;
     }
+
     /*
     pret
     */
-    .book_lend{
+    .book_lend {
         display: flex;
         flex-wrap: wrap;
         justify-content: flex-start;
     }
-    section{
+
+    section {
         width: 300px;
     }
 
@@ -137,69 +159,83 @@
 
 @media screen and (min-width: 1024px) {
 
-    body{
+    body {
         font-size: 14px;
     }
-    header{
+
+    header {
         height: 180px;
         width: 100%;
     }
-    .logo a img{
+
+    .logo a img {
         width: 240px;
     }
-    nav{
+
+    nav {
         font-size: 14px;
         display: flex;
         justify-content: space-evenly;
     }
-    .top_menu{
+
+    .top_menu {
         justify-content: space-evenly;
     }
 
-    .btn_pcours{
+    .btn_pcours {
         margin-left: 30px;
     }
-    .btn-black{
+
+    .btn-black {
         width: 129px;
     }
-    .right_menu{
+
+    .right_menu {
         margin-right: 60px;
     }
-    .btn-cmpt{
+
+    .btn-cmpt {
         margin-right: 50px;
     }
-    .sect_search{
+
+    .sect_search {
         margin: 20px;
     }
-    .error_co, .error_creat{
+
+    .error_co,
+    .error_creat {
         font-size: 12px;
     }
 
     /*
     modal
     */
-    .modal_book_content{
+    .modal_book_content {
         background-color: white;
-        border : 1px solid #888;
+        border: 1px solid #888;
         width: 586px;
         height: 80%;
         z-index: 4;
     }
-    .center_modal{
+
+    .center_modal {
         grid-template-columns: 145px auto;
         grid-template-rows: 220px;
     }
-    .left_modal img{
+
+    .left_modal img {
         width: 140px;
     }
-    .right_modal{
+
+    .right_modal {
         font-size: 12px;
     }
-    .welcome{
+
+    .welcome {
         font-size: 25px;
     }
 
-    .main_book{
+    .main_book {
         margin-top: 2%;
     }
 
@@ -208,26 +244,32 @@
 
 @media screen and (min-width: 1280px) {
 
-    .error_co, .error_creat{
+    .error_co,
+    .error_creat {
         font-size: 14px;
     }
-    .btn-black{
+
+    .btn-black {
         width: 140px;
     }
-    .modal_book_content{
+
+    .modal_book_content {
         margin-top: 90px;
         width: 80%;
     }
-    .center_modal{
+
+    .center_modal {
         grid-template-columns: 195px 2fr;
         grid-template-rows: 300px;
         left: auto;
         padding: 40px;
     }
-    .left_modal img{
+
+    .left_modal img {
         width: 180px;
     }
-    .right_modal{
+
+    .right_modal {
         font-size: 16px;
     }
 }

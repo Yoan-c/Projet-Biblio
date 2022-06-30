@@ -79,6 +79,7 @@ public class MainController {
             retM.put("response", "failed");
             ret.add(retM);
         }
+
         resp.setStatus(HttpStatus.OK.value());
         return mapper.writeValueAsString(ret);
     }
@@ -88,35 +89,34 @@ public class MainController {
         Map<String, String> retM= new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
         req.logout();
-        resp.setContentType("text/x-json;charset=UTF-8");
-        resp.setHeader("Cache-Control", "no-cache");
         retM.put("response", "success");
         ret.add(retM);
         return mapper.writeValueAsString(ret);
     }
-    @GetMapping("/")
+    @GetMapping(value = "/", produces={"application/json; charset=UTF-8"})
     public String  getBook(HttpServletResponse resp) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         String jsonInString = mapper.writeValueAsString(livreService.getBook());
         resp.setStatus(200);
-        resp.setContentType("text/x-json;charset=UTF-8");
         return jsonInString;
     }
-    @GetMapping("/search")
-    public List<Exemplaire> searchBook(@RequestParam Map<String, String> info){
-      // recuperation de l'id
-        MyUserDetails req = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return livreService.search(info);
+    @GetMapping(value = "/search", produces={"application/json; charset=UTF-8"})
+    public String searchBook(@RequestParam Map<String, String> info, HttpServletResponse resp) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonInString = mapper.writeValueAsString(livreService.search(info));
+        return jsonInString;
     }
 
-    @GetMapping("/pret")
+    @GetMapping(value = "/pret", produces={"application/json; charset=UTF-8"})
     public List<Pret> pret(@RequestParam Map<String, String> info){
         // recuperation de l'id
         MyUserDetails infoUser = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return pretService.getPretByUser(infoUser.getUsername());
     }
-    @PutMapping("/pret")
-    public String continuePret(@RequestParam String idPret){
+   // @PutMapping("/pret")
+   @RequestMapping( method = RequestMethod.PUT)
+
+   public String continuePret(@RequestParam String idPret){
         // recuperation de l'id
         MyUserDetails infoUser = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         boolean renouvellement = pretService.updatePret(infoUser.getUsername(), idPret);
