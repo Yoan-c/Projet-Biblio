@@ -108,10 +108,13 @@ public class MainController {
     }
 
     @GetMapping(value = "/pret", produces={"application/json; charset=UTF-8"})
-    public List<Pret> pret(@RequestParam Map<String, String> info){
+    public String pret() throws JsonProcessingException {
         // recuperation de l'id
         MyUserDetails infoUser = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return pretService.getPretByUser(infoUser.getUsername());
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonInString = mapper.writeValueAsString(pretService.getPretByUser(infoUser.getUsername()));
+        log.info(jsonInString);
+        return jsonInString;
     }
    // @PutMapping("/pret")
    @RequestMapping( method = RequestMethod.PUT)
