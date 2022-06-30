@@ -650,3 +650,9 @@ modal book
     display: flex;
     justify-content: center;
 }
+
+#noLend {
+    margin: auto;
+    display: flex;
+    justify-content: center;
+}

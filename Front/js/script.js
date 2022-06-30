@@ -1,5 +1,8 @@
 let PATH = "http://localhost:8081/";
-
+function getConnectionPage() {
+  console.log("getConnectionPage dans script.js")
+  //document.location.href = "./connexion.html"
+}
 function ConnectApi(mail, password, divErr) {
   fetch(PATH + 'connexion', {
     method: 'post',
@@ -32,7 +35,7 @@ function DeconnectApi() {
   })
     .finally(() => {
       setTimeout(() => {
-        document.location.href = "./connexion.html"
+        getConnectionPage()
       }, 4000);
     })
 
@@ -79,10 +82,63 @@ function getSearch(data) {
   })
     .then(resp => resp.json())
     .then((data) => {
-
       createDom(data);
     })
     .catch(err => {
       console.log("err search " + err)
     })
+}
+
+function createDom(books) {
+
+  listBook = books;
+  document.getElementById("contentBook").remove();
+  let idBook = document.getElementById("book_1");
+  let divContentBook = document.createElement("div");
+  divContentBook.setAttribute('class', 'content_book');
+  divContentBook.id = "contentBook";
+  for (let i = 0; i < books.length; i++) {
+    // div content
+
+    // card
+    let card = document.createElement("div");
+    card.setAttribute("class", "card_book");
+    // left card
+    let lcard = document.createElement("div");
+    lcard.setAttribute("class", "left_card");
+    let limg = document.createElement("img");
+    console.log("create dom " + books[i].isbn)
+    limg.src = books[i].isbn.cover;
+    limg.alt = "image de couverture";
+    limg.setAttribute("width", "120");
+
+    lcard.appendChild(limg);
+    card.appendChild(lcard);
+
+    // partie droite card
+    let rcard = document.createElement("div");
+    rcard.setAttribute("class", "right_card");
+    let p = document.createElement("p");
+    let p2 = document.createElement("p");
+    p.textContent = books[i].isbn.titre;
+    p2.textContent = parserGenre(books[i].isbn.genres)
+    //p2.textContent = books[i][4];
+    let button = document.createElement("button");
+    button.setAttribute("class", "btn_info_book");
+    button.id = "show_book" + i;
+    button.setAttribute("onclick", "showModal(" + i + ")");
+    button.textContent = "Afficher";
+    rcard.appendChild(p);
+    rcard.appendChild(p2);
+    rcard.appendChild(button);
+    card.appendChild(rcard);
+    divContentBook.appendChild(card);
+  }
+  // ajout dans la recherche de la page
+  let search = document.getElementById("search");
+  search.appendChild(divContentBook);
+  is_slide = form_search.classList.contains("slide-in");
+  let classN = "sect_search_champs";
+  form_search.setAttribute('class', (is_slide) ? classN + " slide-out" : classN + " slide-in");
+
 }

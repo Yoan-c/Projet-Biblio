@@ -10,7 +10,7 @@ window.onload = () => {
     })
     .catch(err => {
       console.log("err book " + err);
-      document.location.href = "./connexion.html"
+      getConnectionPage()
     })
 }
 
@@ -46,7 +46,7 @@ function formatData(data) {
     document.getElementById("contentBook").appendChild(divBook);
   }
 }
-
+/*
 function createBalise(balise, varClass, id) {
   let b = document.createElement(balise);
   if (varClass)
@@ -55,7 +55,7 @@ function createBalise(balise, varClass, id) {
     b.setAttribute("id", id);
   return b;
 }
-
+*/
 function getInfo(data) {
   console.log(data[0])
   let tabInfos = [];
@@ -80,7 +80,7 @@ function getInfo(data) {
   tabInfos.push(info);
   return tabInfos;
 }
-
+/*
 function getGenre(data, i, tabGenre) {
 
   for (let j = 0; j < data[i].isbn.genres.length; j++) {
@@ -161,7 +161,7 @@ function parserGenre(data) {
   genre = genre.substring(0, genre.length - 2);
   return genre;
 }
-
+*/
 let modal_book = document.getElementById("modal_book");
 function showModal(idBook) {
   console.log(tabInfos)
