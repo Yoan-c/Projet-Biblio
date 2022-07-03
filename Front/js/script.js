@@ -142,3 +142,29 @@ function createDom(books) {
   form_search.setAttribute('class', (is_slide) ? classN + " slide-out" : classN + " slide-in");
 
 }
+
+function Pro_book(isbn) {
+
+  console.log("test isbn " + isbn)
+  fetch(PATH + "pret?idPret=" + isbn, {
+    method: 'PATCH',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
+  })
+    .then(resp => resp.json())
+    .then((data) => {
+      console.log("respone " + data.Result)
+      if (data.Result == "success") {
+        let btn = document.getElementById("btn_reserve" + isbn);
+        btn.classList.remove("active_lend")
+        btn.classList.add("inactive_lend")
+        btn.textContent = "Impossible de prolonger la période de prêt une seconde fois"
+      }
+    })
+    .catch(err => {
+      console.log("err search " + err)
+    })
+}

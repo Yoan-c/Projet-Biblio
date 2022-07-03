@@ -6,7 +6,6 @@ window.onload = () => {
     })
         .then(res => res.json())
         .then(data => {
-            console.log("data pret " + data.length)
             if (data.length > 0)
                 showLend(data)
             else
@@ -29,7 +28,6 @@ function showNoLend() {
 }
 
 function showLend(data) {
-    console.log("test" + data)
     for (let i = 0; i < data.length; i++) {
         let section = createBalise("section", "", "");
         let divImgBook = createBalise("div", "img_book", "");
@@ -40,10 +38,10 @@ function showLend(data) {
         divImgBook.appendChild(imgBook);
         let divInfoBook = createBalise("div", "info_book", "");
         let divDescBook = createBalise("div", "desc_book", "");
-        divDescBook = addPtoDescBook(divDescBook, data[i].exemplaire);
+        divDescBook = addPtoDescBook(divDescBook, data[i].exemplaire, data[i].dateDebut, data[i].dateFin);
         divInfoBook.appendChild(divDescBook);
         let divBtn = createBalise("div", "reserve_book", "");
-        let btn = createBalise("button", "", "");
+        let btn = createBalise("button", "", "btn_reserve" + data[i].exemplaire.isbn.isbn);
         btn.classList.add("btn_reserve_book");
         if (data[i].renouvele) {
             btn.classList.add("inactive_lend");
@@ -62,7 +60,7 @@ function showLend(data) {
     }
 }
 
-function addPtoDescBook(divDescBook, data) {
+function addPtoDescBook(divDescBook, data, dateDebut, dateFin) {
     let p = CreateformateP("Titre : " + data.isbn.titre)
     divDescBook.appendChild(p);
     p = CreateformateP("Auteur : " + parserAuteur(data.isbn.auteurs))
@@ -75,9 +73,13 @@ function addPtoDescBook(divDescBook, data) {
     divDescBook.appendChild(p);
     p = CreateformateP("ISBN : " + data.isbn.isbn)
     divDescBook.appendChild(p);
-    p = CreateformateP("Début du prêt : " + data.dateDebut)
+    let date = new Date(dateDebut);
+    dateDebut = date.getDate() + " / " + date.getMonth() + " / " + date.getFullYear();
+    p = CreateformateP("Début du prêt : " + dateDebut)
     divDescBook.appendChild(p);
-    p = CreateformateP("fin du prêt : " + data.dateFin)
+    date = new Date(dateFin);
+    dateFin = date.getDate() + " / " + date.getMonth() + " / " + date.getFullYear();
+    p = CreateformateP("fin du prêt : " + dateFin)
     divDescBook.appendChild(p);
     return divDescBook
 }

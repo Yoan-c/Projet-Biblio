@@ -6,22 +6,28 @@ import lombok.extern.java.Log;
 import org.json.JSONObject;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -31,6 +37,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 @Configuration
@@ -79,9 +87,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf()
                 .disable()
-               // .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-               // .and()
-                .authorizeRequests()
+                /*.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .and()
+                */.authorizeRequests()
                 .antMatchers("/create").permitAll()
                 .antMatchers("/batch").permitAll()
                 .antMatchers("/connexion").permitAll()
@@ -89,7 +97,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .failureUrl("/login.html?error=true")
+                .failureUrl("http://localhost/testBiblio/deconnexion.html")
                 .successHandler(this::loginSuccessHandler).permitAll()
                 .and()
                 .logout()
@@ -102,7 +110,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //.logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
 
     }
-
         private void loginSuccessHandler(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -111,5 +118,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         response.setStatus(HttpStatus.OK.value());
         objectMapper.writeValue(response.getWriter(), "Yayy you logged in!");
     }
+
 
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.Logger;
 
 @Service
 public class PretService {
@@ -28,7 +29,7 @@ public class PretService {
         }
         int size = pret.size();
         for (int i = 0; i < size ; i++) {
-            if (pret.get(i).getId().toString().equals(idPret)) {
+            if (pret.get(i).getExemplaire().getIsbn().getIsbn().equals(idPret)) {
                 if (pret.get(i).getRenouvele() == false) {
                     pret.get(i).setDateFin(new Date(pret.get(i).getDateFin().getTime() + (7*(1000*60*60*24))));
                     pret.get(i).setRenouvele(true);

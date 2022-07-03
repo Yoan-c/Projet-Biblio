@@ -29,6 +29,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.annotation.processing.SupportedOptions;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-@CrossOrigin(origins = "http://localhost/",  allowedHeaders = "*", allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost"}, allowedHeaders = "*", allowCredentials = "true")
 @RestController
 public class MainController {
 
@@ -56,6 +57,8 @@ public class MainController {
     @Autowired
     private AuthenticationManager authManager;
 
+    private ObjectMapper mapper = new ObjectMapper();
+
     Logger log = Logger.getLogger("");
 
     @PostMapping("/connexion")
@@ -63,7 +66,6 @@ public class MainController {
             throws JsonProcessingException {
         List<Map<String, String>> ret = new ArrayList<>();
         Map<String, String> retM= new HashMap<>();
-        ObjectMapper mapper = new ObjectMapper();
         String mail = info.get("username");
         String mdp = info.get("password");
         UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(mail,mdp);
@@ -87,7 +89,6 @@ public class MainController {
     public String deconnexion(HttpServletRequest req, HttpServletResponse resp) throws JsonProcessingException, ServletException {
         List<Map<String, String>> ret = new ArrayList<>();
         Map<String, String> retM= new HashMap<>();
-        ObjectMapper mapper = new ObjectMapper();
         req.logout();
         retM.put("response", "success");
         ret.add(retM);
@@ -95,14 +96,12 @@ public class MainController {
     }
     @GetMapping(value = "/", produces={"application/json; charset=UTF-8"})
     public String  getBook(HttpServletResponse resp) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
         String jsonInString = mapper.writeValueAsString(livreService.getBook());
         resp.setStatus(200);
         return jsonInString;
     }
     @GetMapping(value = "/search", produces={"application/json; charset=UTF-8"})
-    public String searchBook(@RequestParam Map<String, String> info, HttpServletResponse resp) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
+    public String searchBook(@RequestParam Map<String, String> info) throws JsonProcessingException {
         String jsonInString = mapper.writeValueAsString(livreService.search(info));
         return jsonInString;
     }
@@ -111,21 +110,27 @@ public class MainController {
     public String pret() throws JsonProcessingException {
         // recuperation de l'id
         MyUserDetails infoUser = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ObjectMapper mapper = new ObjectMapper();
         String jsonInString = mapper.writeValueAsString(pretService.getPretByUser(infoUser.getUsername()));
         log.info(jsonInString);
         return jsonInString;
     }
-   // @PutMapping("/pret")
-   @RequestMapping( method = RequestMethod.PUT)
 
-   public String continuePret(@RequestParam String idPret){
+    @PatchMapping(value = "/pret", produces={"application/json; charset=UTF-8"})
+   public String continuePret(@RequestParam String idPret, HttpServletResponse resp) throws JsonProcessingException {
         // recuperation de l'id
         MyUserDetails infoUser = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         boolean renouvellement = pretService.updatePret(infoUser.getUsername(), idPret);
-        if (renouvellement)
-            return "ok";
-        return "KO";
+        HashMap<String, String> ret = new HashMap<>();
+       if (renouvellement) {
+           resp.setStatus(200);
+           ret.put("Result", "success");
+           return mapper.writeValueAsString(ret);
+       }
+       else {
+           resp.setStatus(403);
+           ret.put("Result", "failure");
+           return mapper.writeValueAsString(ret);
+       }
     }
 
     @GetMapping("/create")
