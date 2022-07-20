@@ -133,14 +133,14 @@ public class MainController {
        }
     }
 
-    @GetMapping("/create")
-    public String createUser(@RequestParam Map<String, String> info){
-
+    @PostMapping(value = "/create", produces={"application/json; charset=UTF-8"})
+    public String createUser(@RequestBody Map<String, String> info) throws JsonProcessingException {
+        log.info("test "+ info);
         boolean create = userService.createUser(info);
         if(!create){
-            return "KO";
+            return mapper.writeValueAsString("KO");
         }
-        return "creation";
+        return mapper.writeValueAsString("OK");
     }
 
     @GetMapping("/info")
