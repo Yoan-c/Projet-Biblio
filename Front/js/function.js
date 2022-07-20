@@ -87,3 +87,27 @@ function createBalise(balise, varClass, id) {
         b.setAttribute("id", id);
     return b;
 }
+
+// a tester
+function setmessageErrorModif(message) {
+    let errorModif = document.getElementById("errorModif");
+    let p = document.getElementById("errorModifMsg");
+    if (p == null) {
+        p = document.createElement("p");
+        p.id = "errorModifMsg";
+    }
+    p.textContent = message;
+    errorModif.appendChild(p);
+}
+function setmessageErrorReset(id) {
+    let errorModif = document.getElementById(id);
+    if (errorModif) {
+        errorModif.textContent = "";
+    }
+}
+function ValidateEmail(mail) {
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+        return (true)
+    }
+    return (false)
+}

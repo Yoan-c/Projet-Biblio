@@ -28,6 +28,10 @@ public class MyUserDetails implements UserDetails {
         return user.getEmail();
     }
 
+    public void setUsername(String mail) {
+        user.setEmail(mail);
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;

@@ -74,7 +74,7 @@ public class MainController {
             Authentication auth = authManager.authenticate(authReq);
             SecurityContext sc = SecurityContextHolder.getContext();
             sc.setAuthentication(auth);
-            retM.put("response", "sucess");
+            retM.put("response", "success");
             ret.add(retM);
         }
         catch(BadCredentialsException e){
@@ -152,26 +152,16 @@ public class MainController {
         return user;
     }
 
-    @PutMapping("/update")
-    public String updateUser(@RequestParam Map<String, String> info){
+    @PutMapping(value ="/update",  produces={"application/json; charset=UTF-8"})
+    public String updateUser(@RequestBody Map<String, String> info) throws JsonProcessingException {
         // recuperation de l'id
         MyUserDetails infoUser = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String resultat = userService.updateUser(info, infoUser.getUsername());
         int code = Integer.parseInt(resultat.split(";")[0]);
-//        try {
-            resultat = resultat.split(";")[1];
-//        } catch(Exception e) {
-//            ExpiresFilter.XHttpServletResponse(404);
-//            return e;
-//        }
-        if (code == 0){
-            // erreur
-            return resultat;
-        }
-        else {
-            // modif ok
-            return resultat;
-        }
+        resultat = resultat.split(";")[1];
+         if (code == 2)
+             infoUser.setUsername(info.get("mail"));
+         return mapper.writeValueAsString(resultat);
     }
     @GetMapping("/batch")
     public List<HashMap<String, String>> batch(@RequestParam String username, @RequestParam String password){

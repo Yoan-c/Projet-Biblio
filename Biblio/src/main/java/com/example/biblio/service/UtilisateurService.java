@@ -63,6 +63,7 @@ public class UtilisateurService implements UserDetailsService  {
          userRepository.deleteById(user.getId());
     }
     public String updateUser(Map<String, String> infoUser, String mail){
+        boolean changeMail = false;
         if (!verifData(infoUser.get("nom")) || !verifData(infoUser.get("prenom")) || !verifData(infoUser.get("mail")))
             return "0;Erreur : Vérifier les champs avant de valider";
 
@@ -90,8 +91,11 @@ public class UtilisateurService implements UserDetailsService  {
             isMatch = matcher.matches();
             if (isMatch){
                 Utilisateur checkUser = userRepository.getUtilisateurByMail(infoUser.get("mail"));
-                if(checkUser == null)
+                if(checkUser == null){
                     user.setEmail(infoUser.get("mail"));
+                    changeMail = true;
+                }
+
                 else
                     return "0;Erreur : Un utilisateur utilise déjà cet email";
             }
@@ -99,7 +103,10 @@ public class UtilisateurService implements UserDetailsService  {
                 return "0;Erreur : Format d'email invalid";
         }
         userRepository.save(user);
-        return "1;Votre compte à été modifié";
+        if (changeMail)
+            return "2;mail changé";
+        else
+            return "1;Votre compte à été modifié";
     }
 
     public boolean verifData(String data) {

@@ -43,40 +43,43 @@
             </div>
         </nav>
     </header>
-    <main>
-        <section class="info">
+    <main class="container_connect">
+        <div class="error_creat" id="errorModif">
 
-            <table>
-                <tr>
-                    <td>Nom : </td>
-                    <td>
-                        <span id="nameId"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Prénom : </td>
-                    <td>
-                        <span id="prenomId"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>E-mail : </td>
-                    <td>
-                        <span id="mailId"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="center">
-                        <div class="link link_modif">
-                            <a href="./modifUser.html" class="">Modifier les informations</a>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </section>
+            <p class="resModifSuccess hide" id="resModif"> Infomation changé avec succes </p>
+
+            <p class="errorModifMsg hide" id="resModif"> Erreur , aucun changement n'a été effectué </p>
+
+        </div>
+        <form class="form_creat" method="POST" action="" id="formModif">
+            <div class="label_form_creat">
+                <label for="lastNameModif" class="form_creat_space">Nom :</label>
+                <input id="lastNameModif" type="text" name="lastName">
+            </div>
+            <div class="label_form_creat">
+                <label for="firstNameModif" class="form_creat_space">Prenom :</label>
+                <input id="firstNameModif" type="text" name="firstName" />
+            </div>
+            <div class="label_form_creat">
+                <label for="mailModif" class="form_creat_space"> E-mail :</label>
+                <input id="mailModif" type="mail" name="mail" />
+            </div>
+            <div class="label_form_creat">
+                <label for="mdpModif" class="form_creat_space">Nouveau mot de passe :</label>
+                <input id="mdpModif" type="password" name="mdp" />
+            </div>
+            <div class="label_form_creat">
+                <label for="mdpConfirmModif" class="form_creat_space"> Confirmation du mot de passe :</label>
+                <input id="mdpConfirmModif" type="password" name="mdpConfirm" />
+            </div>
+            <div class="btn_form_creat">
+                <button class="link" id="btnValidModif">Valider</button>
+            </div>
+        </form>
     </main>
     <script type="text/javascript" src="./js/script.js"></script>
-    <script type="text/javascript" src="./js/infoUser.js"></script>
+    <script type="text/javascript" src="./js/function.js"></script>
+    <script type="text/javascript" src="./js/modifUser.js"></script>
 </body>
 
 </html>

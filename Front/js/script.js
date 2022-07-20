@@ -9,6 +9,7 @@ function ConnectApi(mail, password, divErr) {
     body: 'username=' + mail + '&password=' + password,
     headers: {
       'Content-type': 'application/x-www-form-urlencoded',
+      'Access-Control-Allow-Origin': '*'
     },
     credentials: 'include'
   })
@@ -17,7 +18,7 @@ function ConnectApi(mail, password, divErr) {
 
       // console.log("res script " + res.ok)
       console.log("res script " + data[0].response)
-      if (data[0].response === "sucess")
+      if (data[0].response === "success")
         // document.forms["form_connect"].submit();
         document.location.href = "./book.html"
       else {
