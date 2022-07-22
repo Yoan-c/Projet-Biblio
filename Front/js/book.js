@@ -9,7 +9,6 @@ window.onload = () => {
       formatData(data);
     })
     .catch(err => {
-      console.log("err book " + err);
       getConnectionPage()
     })
 }
@@ -46,18 +45,8 @@ function formatData(data) {
     document.getElementById("contentBook").appendChild(divBook);
   }
 }
-/*
-function createBalise(balise, varClass, id) {
-  let b = document.createElement(balise);
-  if (varClass)
-    b.setAttribute("class", varClass);
-  if (id)
-    b.setAttribute("id", id);
-  return b;
-}
-*/
+
 function getInfo(data) {
-  console.log(data[0])
   let tabInfos = [];
   let tabGenre = [];
   let tabLangue = [];
@@ -164,11 +153,7 @@ function parserGenre(data) {
 */
 let modal_book = document.getElementById("modal_book");
 function showModal(idBook) {
-  console.log(tabInfos)
-  console.log(idBook)
   let infoBook = tabInfos[0].book[idBook];
-
-  console.log("test " + infoBook.isbn.datePublication)
   let auteur = parserAuteur(infoBook.isbn.auteurs)
   let genre = parserGenre(infoBook.isbn.genres)
   let nb = infoBook.stock;

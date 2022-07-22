@@ -198,7 +198,8 @@
         margin-right: 50px;
     }
 
-    .sect_search {
+    .sect_search,
+    .sect_stats {
         margin: 20px;
     }
 

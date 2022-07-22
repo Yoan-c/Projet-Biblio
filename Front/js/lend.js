@@ -12,7 +12,6 @@ window.onload = () => {
                 showNoLend()
         })
         .catch(err => {
-            console.log("err book " + err);
             getConnectionPage();
         })
 }

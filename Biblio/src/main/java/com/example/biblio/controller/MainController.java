@@ -168,7 +168,7 @@ public class MainController {
         return pretService.relancePret(username, password);
     }
 
-    @GetMapping("/stats")
+    @GetMapping(value ="/stats",  produces={"application/json; charset=UTF-8"})
     public Map<String, Object> statsLend(){
         return pretService.getStats();
     }

@@ -46,9 +46,6 @@ function FillInfoUserModif(data) {
 }
 
 function updateUser(nom, prenom, mail, mdp, mdpConfirm) {
-
-    console.log("passe ici envoi de donnee ");
-
     let data = {
         "nom": nom,
         "prenom": prenom,
@@ -69,7 +66,6 @@ function updateUser(nom, prenom, mail, mdp, mdpConfirm) {
     })
         .then(res => res.json())
         .then(data => {
-            console.log("infoUser " + data.indexOf("Erreur"))
             if (data.indexOf("Erreur") > -1)
                 setmessageErrorModif(data)
             else

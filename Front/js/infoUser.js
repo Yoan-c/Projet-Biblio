@@ -5,11 +5,9 @@ window.onload = () => {
     })
         .then(res => res.json())
         .then(data => {
-            console.log("infoUser " + data.prenom)
             FillInfoUser(data)
         })
         .catch(err => {
-            console.log("err InfoUser " + err);
             getConnectionPage()
         })
 }

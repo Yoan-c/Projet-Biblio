@@ -367,10 +367,12 @@ td {
     cursor: pointer;
 }
 
+
 /*
 recherche livre
 */
-.sect_search {
+.sect_search,
+.sect_stats {
     background-color: white;
     flex-grow: 1;
     justify-content: center;
@@ -410,7 +412,7 @@ recherche livre
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    transform: translateY(-130%);
+    transform: translateY(-150%);
     z-index: 2;
     position: absolute;
     left: 10%;
@@ -434,7 +436,7 @@ recherche livre
 
 @keyframes slide-in {
     0% {
-        transform: translateY(-130%);
+        transform: translateY(-150%);
     }
 
     100% {
@@ -445,7 +447,7 @@ recherche livre
 /*rendre les navigateur compatible*/
 @-webkit-keyframes slide-in {
     0% {
-        transform: translateY(-130%);
+        transform: translateY(-150%);
     }
 
     100% {
@@ -459,7 +461,7 @@ recherche livre
     }
 
     100% {
-        transform: translateY(-130%);
+        transform: translateY(-150%);
     }
 }
 
@@ -469,7 +471,7 @@ recherche livre
     }
 
     100% {
-        transform: translateY(-130%);
+        transform: translateY(-150%);
     }
 }
 
@@ -655,4 +657,34 @@ modal book
     margin: auto;
     display: flex;
     justify-content: center;
+}
+
+/*
+stats
+*/
+#stats {
+    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.statUnderline {
+    width: 100%;
+}
+
+.pStat {
+    margin: auto;
+    margin-top: 10px;
+    font-size: 24px;
+    color: #028586;
+}
+
+.statPage {
+    margin-top: 5px;
+    padding: 5px;
+}
+
+.statPage>a {
+    color: #028586;
+    font-size: 14px;
 }

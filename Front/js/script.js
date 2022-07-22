@@ -1,7 +1,6 @@
 let PATH = "http://localhost:8081/";
 function getConnectionPage() {
-  console.log("getConnectionPage dans script.js")
-  //document.location.href = "./connexion.html"
+  document.location.href = "./connexion.html"
 }
 function ConnectApi(mail, password, divErr) {
   fetch(PATH + 'connexion', {
@@ -104,7 +103,6 @@ function createDom(books) {
     let lcard = document.createElement("div");
     lcard.setAttribute("class", "left_card");
     let limg = document.createElement("img");
-    console.log("create dom " + books[i].isbn)
     limg.src = books[i].isbn.cover;
     limg.alt = "image de couverture";
     limg.setAttribute("width", "120");
@@ -141,8 +139,6 @@ function createDom(books) {
 }
 
 function Pro_book(isbn) {
-
-  console.log("test isbn " + isbn)
   fetch(PATH + "pret?idPret=" + isbn, {
     method: 'PATCH',
     headers: {
@@ -153,7 +149,6 @@ function Pro_book(isbn) {
   })
     .then(resp => resp.json())
     .then((data) => {
-      console.log("respone " + data.Result)
       if (data.Result == "success") {
         let btn = document.getElementById("btn_reserve" + isbn);
         btn.classList.remove("active_lend")
