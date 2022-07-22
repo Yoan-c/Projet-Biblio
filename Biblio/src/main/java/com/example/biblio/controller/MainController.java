@@ -111,7 +111,6 @@ public class MainController {
         // recuperation de l'id
         MyUserDetails infoUser = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String jsonInString = mapper.writeValueAsString(pretService.getPretByUser(infoUser.getUsername()));
-        log.info(jsonInString);
         return jsonInString;
     }
 
@@ -135,7 +134,6 @@ public class MainController {
 
     @PostMapping(value = "/create", produces={"application/json; charset=UTF-8"})
     public String createUser(@RequestBody Map<String, String> info) throws JsonProcessingException {
-        log.info("test "+ info);
         boolean create = userService.createUser(info);
         if(!create){
             return mapper.writeValueAsString("KO");
