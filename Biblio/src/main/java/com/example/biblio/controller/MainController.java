@@ -83,6 +83,8 @@ public class MainController {
         }
 
         resp.setStatus(HttpStatus.OK.value());
+        if (mail.equals("admin"))
+            return "redirect:/batch";
         return mapper.writeValueAsString(ret);
     }
     @GetMapping("/deconnexion")
