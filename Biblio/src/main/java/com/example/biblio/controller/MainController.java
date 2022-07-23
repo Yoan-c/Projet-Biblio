@@ -181,21 +181,15 @@ public class MainController {
             produces = MediaType.IMAGE_JPEG_VALUE)
 
     public void getImage(@PathVariable("name") final String name, HttpServletResponse response) throws IOException {
-
-        var imgFile = new ClassPathResource("images/36058.jpg");
-
-        log.info("test "+imgFile+ " name "+name);
-        imgFile = new ClassPathResource("images/"+name);
-        log.info("test "+imgFile+ " name "+name);
-            response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-            try{
-                StreamUtils.copy(imgFile.getInputStream(), response.getOutputStream());
-            }
-            catch(Exception e){
-                log.info("Erreur "+ e);
-                imgFile = new ClassPathResource("images/aucun.png");
-                StreamUtils.copy(imgFile.getInputStream(), response.getOutputStream());
-            }
-
+        var imgFile = new ClassPathResource("images/"+name);
+        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        try{
+            StreamUtils.copy(imgFile.getInputStream(), response.getOutputStream());
+        }
+        catch(Exception e){
+           log.info("Erreur "+ e);
+           imgFile = new ClassPathResource("images/aucun.png");
+           StreamUtils.copy(imgFile.getInputStream(), response.getOutputStream());
+        }
     }
 }
