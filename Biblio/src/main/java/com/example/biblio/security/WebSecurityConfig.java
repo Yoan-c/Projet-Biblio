@@ -82,6 +82,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         http
                 .cors()
                 .and()
@@ -90,10 +91,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 /*.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and()
                 */.authorizeRequests()
+                .antMatchers("/images/**").permitAll()
                 .antMatchers("/create").permitAll()
                 .antMatchers("/batch").permitAll()
                 .antMatchers("/connexion").permitAll()
-                .antMatchers("/update").authenticated()
+                //.antMatchers("/update").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

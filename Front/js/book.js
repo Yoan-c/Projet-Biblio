@@ -30,7 +30,7 @@ function formatData(data) {
     divRightCard.appendChild(pTitle);
     divRightCard.appendChild(pContent);
     let img = document.createElement("img");
-    img.src = tabBooks[i].isbn.cover
+    img.src = PATH + tabBooks[i].isbn.cover
     img.alt = "Photo de couverture"
     img.width = 120;
     let btn = document.createElement("button");
@@ -172,13 +172,13 @@ function showModal(idBook) {
   if (getImg == null) {
     let img = document.createElement('img');
 
-    img.src = infoBook.isbn.cover;
+    img.src = PATH + infoBook.isbn.cover;
     img.alt = "image de couverture";
     img.id = "add_img_modal";
     left_modal.appendChild(img);
   }
   else {
-    getImg.src = infoBook.isbn.cover;
+    getImg.src = PATH + infoBook.isbn.cover;
   }
 
   if (firstP_modal == null) {
@@ -347,7 +347,7 @@ function createDom(books) {
     let lcard = document.createElement("div");
     lcard.setAttribute("class", "left_card");
     let limg = document.createElement("img");
-    limg.src = books[i].isbn.cover;
+    limg.src = PATH + books[i].isbn.cover;
     limg.alt = "image de couverture";
     limg.setAttribute("width", "120");
 

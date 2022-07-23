@@ -14,7 +14,9 @@ import org.apache.catalina.filters.ExpiresFilter;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -26,6 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -35,6 +38,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -171,5 +175,27 @@ public class MainController {
     @GetMapping(value ="/stats",  produces={"application/json; charset=UTF-8"})
     public Map<String, Object> statsLend(){
         return pretService.getStats();
+    }
+
+    @RequestMapping(value = "/images/{name}", method = RequestMethod.GET,
+            produces = MediaType.IMAGE_JPEG_VALUE)
+
+    public void getImage(@PathVariable("name") final String name, HttpServletResponse response) throws IOException {
+
+        var imgFile = new ClassPathResource("images/36058.jpg");
+
+        log.info("test "+imgFile+ " name "+name);
+        imgFile = new ClassPathResource("images/"+name);
+        log.info("test "+imgFile+ " name "+name);
+            response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+            try{
+                StreamUtils.copy(imgFile.getInputStream(), response.getOutputStream());
+            }
+            catch(Exception e){
+                log.info("Erreur "+ e);
+                imgFile = new ClassPathResource("images/aucun.png");
+                StreamUtils.copy(imgFile.getInputStream(), response.getOutputStream());
+            }
+
     }
 }

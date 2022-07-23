@@ -31,7 +31,7 @@ function showLend(data) {
         let section = createBalise("section", "", "");
         let divImgBook = createBalise("div", "img_book", "");
         let imgBook = createBalise("img", "", "");
-        imgBook.src = data[i].exemplaire.isbn.cover
+        imgBook.src = PATH + data[i].exemplaire.isbn.cover
         imgBook.alt = "image de couvertur";
         imgBook.width = 120;
         divImgBook.appendChild(imgBook);

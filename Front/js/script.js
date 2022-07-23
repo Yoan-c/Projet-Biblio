@@ -16,6 +16,8 @@ function ConnectApi(mail, password, divErr) {
 
       if (data[0].response === "success")
         document.location.href = "./book.html"
+      else if (data[0].response === "relance")
+        document.location.href = "./relance.html"
       else {
         divErr.textContent = "Erreur : mail / mot de passe invalide"
       }
@@ -103,7 +105,7 @@ function createDom(books) {
     let lcard = document.createElement("div");
     lcard.setAttribute("class", "left_card");
     let limg = document.createElement("img");
-    limg.src = books[i].isbn.cover;
+    limg.src = PATH + books[i].isbn.cover;
     limg.alt = "image de couverture";
     limg.setAttribute("width", "120");
 
