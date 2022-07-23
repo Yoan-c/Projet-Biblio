@@ -41,7 +41,7 @@ public class PretTest {
     }
     @Test
     void updatePretTest(){
-        boolean isEmpty = pretService.updatePret("test@gmail.com", "1");
+        boolean isEmpty = pretService.updatePret("test@gmail.com", "9781234567892");
         assertTrue(isEmpty);
     }
     @Test
@@ -57,6 +57,6 @@ public class PretTest {
     @Test
     void relancePretTest(){
         List<HashMap<String, String>> lstPret = pretService.relancePret("admin", "admin");
-        assertEquals("studi@gmail.com", lstPret.get(0).get("email"));
+        assertEquals("test@gmail.com", lstPret.get(0).get("email"));
     }
 }
