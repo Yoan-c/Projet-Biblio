@@ -5,8 +5,6 @@ import com.example.biblio.repository.IUtilisateurRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,33 +26,51 @@ public class UtilisateurTest {
         info.put("confirmMdp", "1");
         info.put("prenom", "test2");
         info.put("email", "test2");
+        info.put("testMail", "testCreateUser@gmail.com");
         return info;
+    }
+    @Test
+    void connexionUserValid(){
+        boolean isConect =  utilisateurService.connexionUser("test@gmail.com", "test");
+        assertTrue(isConect);
+    }
+    @Test
+    void connexionUserInvalid(){
+        boolean isConect =  utilisateurService.connexionUser("test@gmail.com", "t");
+        assertFalse(isConect);
+    }
+    @Test
+    void connexionUserNull(){
+        boolean isConect =  utilisateurService.connexionUser("testm", "t");
+        assertFalse(isConect);
+    }
+    @Test
+    void deconnexionUser(){
+        Utilisateur user = utilisateurService.getUser("test@gmail.com");
+        boolean isConect =  utilisateurService.deconnexion(user.getHash());
+        assertTrue(isConect);
+    }
+    @Test
+    void deconnexionUserInvalid(){
+        boolean isConect =  utilisateurService.deconnexion("gtre");
+        assertFalse(isConect);
     }
     @Test
     @Order(1)
     void loadUserByUsernameNullTest(){
-        Exception exception = assertThrows(UsernameNotFoundException.class, () -> {
-            utilisateurService.loadUserByUsername("");
-        });
-        String expectedMessage = "User not found";
-        String actualMessage = exception.getMessage();
-
-        assertTrue(actualMessage.contains(expectedMessage));
+        Utilisateur user = utilisateurService.getUser("");
+        assertNull(user);
     }
     @Test
     @Order(2)
     void loadUserByUsernameBadParamTest(){
-        Exception exception = assertThrows(UsernameNotFoundException.class, () -> {
-            utilisateurService.loadUserByUsername("terherth");
-        });
-        String expectedMessage = "User not found";
-        String actualMessage = exception.getMessage();
-        assertTrue(actualMessage.contains(expectedMessage));
+        Utilisateur user = utilisateurService.getUser("sdgsdfg");
+        assertNull(user);
     }
     @Test
     @Order(3)
     void loadUserByUsernameGoodParamTest(){
-        UserDetails user =  utilisateurService.loadUserByUsername("test@gmail.com");
+        Utilisateur user = utilisateurService.getUser("test@gmail.com");
         assertNotNull(user);
     }
     @Test
@@ -82,14 +98,14 @@ public class UtilisateurTest {
         info = getInfoForTest();
         info.put("mdp", "toto");
         info.put("confirmMdp", "tata");
-        boolean isCreate =  utilisateurService.createUser(info);
-        assertFalse(isCreate);
+        boolean success  =  utilisateurService.createUser(info);
+        assertFalse(success);
     }
     @Test
     @Order(8)
     void creatUserAlreadyExistTest(){
         info = getInfoForTest();
-        info.put("mail", "test@gmail.com");
+        info.put("email", "test@gmail.com");
         boolean isCreate =  utilisateurService.createUser(info);
         assertFalse(isCreate);
     }
@@ -97,7 +113,7 @@ public class UtilisateurTest {
     @Test
     void creatUserValidTest(){
         info = getInfoForTest();
-        info.put("email", "test2@gmail.com");
+        info.put("email", info.get("testMail"));
         boolean isCreate =  utilisateurService.createUser(info);
         assertTrue(isCreate);
     }
@@ -105,33 +121,37 @@ public class UtilisateurTest {
     @Order(10)
     void updateUserDataInvalidTest(){
         info = getInfoForTest();
-        String msg =  utilisateurService.updateUser(info, "test2@gmail.com");
+        Utilisateur user = utilisateurService.getUser(info.get("testMail"));
+        String msg =  utilisateurService.updateUser(info, "testgmail.com", user);
         assertEquals("0;Erreur : Vérifier les champs avant de valider", msg);
     }
     @Test
     @Order(11)
     void updateUserNotFoundTest(){
         info = getInfoForTest();
-        info.put("mail", "test2@gmail.com");
-        String msg =  utilisateurService.updateUser(info, "t@gmail.com");
+        Utilisateur user = utilisateurService.getUser(info.get("testMail"));
+        info.put("mail", info.get("testMail"));
+        String msg =  utilisateurService.updateUser(info, "t@gmail.com", user);
         assertEquals("0;Erreur : Utilisateur non trouvé", msg);
     }
     @Test
     @Order(12)
     void updateUserBadNameTest(){
         info = getInfoForTest();
-        info.put("mail", "test2@gmail.com");
+        info.put("mail", info.get("testMail"));
+        Utilisateur user = utilisateurService.getUser(info.get("testMail"));
         info.put("nom", null);
-        String msg =  utilisateurService.updateUser(info, "test2@gmail.com");
+        String msg =  utilisateurService.updateUser(info, info.get("testMail"), user);
         assertEquals("0;Erreur : Vérifier les champs avant de valider", msg);
     }
     @Test
     @Order(13)
     void updateUserBadMdpTest(){
         info = getInfoForTest();
-        info.put("mail", "test2@gmail.com");
+        Utilisateur user = utilisateurService.getUser(info.get("testMail"));
+        info.put("mail", info.get("testMail"));
         info.put("mdp", "test");
-        String msg =  utilisateurService.updateUser(info, "test2@gmail.com");
+        String msg =  utilisateurService.updateUser(info, info.get("testMail"), user);
         assertEquals("0;Erreur : Vérifier le mot de passe et la confirmation du mot de passe", msg);
     }
 
@@ -139,40 +159,46 @@ public class UtilisateurTest {
     @Order(14)
     void updateUserMdpNotFoundTest(){
         info = getInfoForTest();
-        info.put("mail", "test2@gmail.com");
+        info.put("mail", info.get("testMail"));
+        Utilisateur user = utilisateurService.getUser(info.get("testMail"));
         info.put("mdp", "");
-        String msg =  utilisateurService.updateUser(info, "test2@gmail.com");
+        String msg =  utilisateurService.updateUser(info, info.get("testMail"), user);
         assertEquals("0;Erreur : Veuillez remplir le mot de passe et la confirmation", msg);
     }
     @Test
-    @Order(14)
+    @Order(15)
     void updateUserMailAlreadyUseTest(){
         info = getInfoForTest();
-        info.put("mail", "test@gmail.com");
-        String msg =  utilisateurService.updateUser(info, "test2@gmail.com");
+        info.put("mail", info.get("testMail"));
+        Utilisateur user = utilisateurService.getUser(info.get("testMail"));
+        String msg =  utilisateurService.updateUser(info, "test@gmail.com", user);
         assertEquals("0;Erreur : Un utilisateur utilise déjà cet email", msg);
     }
     @Test
-    @Order(15)
+    @Order(16)
     void updateUserMailNotValidTest(){
         info = getInfoForTest();
         info.put("mail", "testgmail.com");
-        String msg =  utilisateurService.updateUser(info, "test2@gmail.com");
+        Utilisateur user = utilisateurService.getUser(info.get("testMail"));
+        String msg =  utilisateurService.updateUser(info, "test2@gmail.com", user);
         assertEquals("0;Erreur : Format d'email invalid", msg);
     }
     @Test
-    @Order(15)
+    @Order(17)
     void updateUserValidTest(){
         info = getInfoForTest();
-        info.put("mail", "test2@gmail.com");
+        Utilisateur user = utilisateurService.getUser(info.get("testMail"));
+        info.put("mail", info.get("testMail"));
         info.put("nom", "Marie");
-        String msg =  utilisateurService.updateUser(info, "test2@gmail.com");
-        assertEquals("1;Votre compte à été modifié", msg);
+        String msg =  utilisateurService.updateUser(info, info.get("testMail"), user);
+        String msgs = msg.split(";")[0]+";"+msg.split(";")[1];
+        assertEquals("1;Votre compte à été modifié", msgs);
     }
 
     @Test
     void deleteUserTest(){
-        Utilisateur user =  utilisateurService.getUser("test2@gmail.com");
+        info = getInfoForTest();
+        Utilisateur user =  utilisateurService.getUser(info.get("testMail"));
         utilisateurService.delUser(user);
     }
     @Test
@@ -195,4 +221,5 @@ public class UtilisateurTest {
         UtilisateurService utilisateurService = new UtilisateurService();
         assertFalse(utilisateurService.verifData("   "));
     }
+
 }

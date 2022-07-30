@@ -1,8 +1,7 @@
 let tabInfos
 window.onload = () => {
-    fetch(PATH + "pret", {
+    fetch(PATH + "pret?token=" + getCookie("token"), {
         method: 'GET',
-        credentials: 'include',
     })
         .then(res => res.json())
         .then(data => {

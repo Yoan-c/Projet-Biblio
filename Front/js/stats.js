@@ -1,7 +1,6 @@
 window.onload = () => {
-    fetch(PATH + "stats", {
+    fetch(PATH + "stats?token=" + getCookie("token"), {
         method: 'GET',
-        credentials: 'include',
     })
         .then(res => res.json())
         .then(data => {

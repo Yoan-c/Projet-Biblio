@@ -1,7 +1,6 @@
 window.onload = () => {
-    fetch(PATH + "info", {
+    fetch(PATH + "info?token=" + getCookie("token"), {
         method: 'GET',
-        credentials: 'include',
     })
         .then(res => res.json())
         .then(data => {
@@ -51,7 +50,8 @@ function updateUser(nom, prenom, mail, mdp, mdpConfirm) {
         "prenom": prenom,
         "mdp": mdp,
         "mail": mail,
-        "confirmMdp": mdpConfirm
+        "confirmMdp": mdpConfirm,
+        "token": getCookie("token")
 
     }
 
@@ -62,14 +62,16 @@ function updateUser(nom, prenom, mail, mdp, mdpConfirm) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(data),
-        credentials: 'include',
     })
         .then(res => res.json())
         .then(data => {
-            if (data.indexOf("Erreur") > -1)
+            if (data.result.indexOf("Erreur") > -1)
                 setmessageErrorModif(data)
-            else
+            else {
+                setCookie("token", data.token)
                 document.location.href = "./modifUser.html";
+            }
+
         })
         .catch(err => {
             getConnectionPage()

@@ -1,4 +1,5 @@
-let PATH = "http://localhost:8081/";
+//let PATH = "http://localhost:81/";
+let PATH = "https://bibliostudi.herokuapp.com/";
 function getConnectionPage() {
   document.location.href = "./connexion.html"
 }
@@ -8,14 +9,17 @@ function ConnectApi(mail, password, divErr) {
     body: 'username=' + mail + '&password=' + password,
     headers: {
       'Content-type': 'application/x-www-form-urlencoded',
+      //'Access-Control-Allow-Origin': "https://bibliostudi.000webhostapp.com/"
     },
-    credentials: 'include'
   })
     .then(res => res.json())
     .then(data => {
 
-      if (data[0].response === "success")
+      if (data[0].response === "success") {
+        setCookie("token", data[0].token)
         document.location.href = "./book.html"
+      }
+
       else if (data[0].response === "relance")
         document.location.href = "./relance.html"
       else {
@@ -27,9 +31,8 @@ function ConnectApi(mail, password, divErr) {
     })
 }
 function DeconnectApi() {
-  fetch(PATH + "deconnexion", {
+  fetch(PATH + "deconnexion?token=" + getCookie("token"), {
     method: 'GET',
-    credentials: 'include'
   })
     .finally(() => {
       setTimeout(() => {
@@ -74,9 +77,8 @@ function getSearch(data) {
   let genre = document.getElementById("search_genre").value;
   let langue = document.getElementById("search_langue").value;
 
-  fetch(PATH + "search?titre=" + titre + "&auteur=" + auteur + "&genre=" + genre + "&langue=" + langue, {
+  fetch(PATH + "search?token=" + getCookie("token") + "&titre=" + titre + "&auteur=" + auteur + "&genre=" + genre + "&langue=" + langue, {
     method: 'GET',
-    credentials: 'include',
   })
     .then(resp => resp.json())
     .then((data) => {
@@ -141,13 +143,12 @@ function createDom(books) {
 }
 
 function Pro_book(isbn) {
-  fetch(PATH + "pret?idPret=" + isbn, {
+  fetch(PATH + "pret?idPret=" + isbn + "&token=" + getCookie("token"), {
     method: 'PATCH',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
-    credentials: 'include',
   })
     .then(resp => resp.json())
     .then((data) => {

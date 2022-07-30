@@ -1,14 +1,16 @@
 package com.example.biblio.controller;
 
 import com.example.biblio.entity.*;
+import com.example.biblio.functions.hash.Empreinte;
+import com.example.biblio.functions.token.Token;
 import com.example.biblio.repository.IUtilisateurRepository;
-import com.example.biblio.security.AppAuthProvider;
-import com.example.biblio.security.MyUserDetails;
 import com.example.biblio.service.LivreService;
 import com.example.biblio.service.PretService;
 import com.example.biblio.service.UtilisateurService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jdk.jshell.execution.Util;
 import org.apache.catalina.filters.ExpiresFilter;
 import org.json.JSONObject;
@@ -18,15 +20,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
@@ -46,10 +39,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-@CrossOrigin(origins = {"http://localhost"}, allowedHeaders = "*", allowCredentials = "true")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class MainController {
-
     @Autowired
     private LivreService livreService;
 
@@ -58,10 +50,10 @@ public class MainController {
 
     @Autowired
     UtilisateurService userService;
-    @Autowired
-    private AuthenticationManager authManager;
+
 
     private ObjectMapper mapper = new ObjectMapper();
+
 
     Logger log = Logger.getLogger("");
 
@@ -72,75 +64,97 @@ public class MainController {
         Map<String, String> retM= new HashMap<>();
         String mail = info.get("username");
         String mdp = info.get("password");
-        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(mail,mdp);
-        authReq.setDetails(new WebAuthenticationDetails(req));
-        try {
-            Authentication auth = authManager.authenticate(authReq);
-            SecurityContext sc = SecurityContextHolder.getContext();
-            sc.setAuthentication(auth);
+        boolean isConnect = userService.connexionUser(mail, mdp);
+        if(isConnect){
             retM.put("response", "success");
+            retM.put("token", userService.getHashUser(mail));
             ret.add(retM);
         }
-        catch(BadCredentialsException e){
+        else {
             retM.put("response", "failed");
             ret.add(retM);
         }
-
         resp.setStatus(HttpStatus.OK.value());
-        if (mail.equals("admin"))
-            return "redirect:/batch";
+
         return mapper.writeValueAsString(ret);
     }
     @GetMapping("/deconnexion")
-    public String deconnexion(HttpServletRequest req, HttpServletResponse resp) throws JsonProcessingException, ServletException {
+    public String deconnexion(@RequestParam String token, HttpServletResponse resp) throws JsonProcessingException, ServletException {
         List<Map<String, String>> ret = new ArrayList<>();
         Map<String, String> retM= new HashMap<>();
-        req.logout();
-        retM.put("response", "success");
+        boolean isDeconnect = userService.deconnexion(token);
+        String response = (isDeconnect)? "success" : "failed";
+        retM.put("response", response);
         ret.add(retM);
         return mapper.writeValueAsString(ret);
     }
     @GetMapping(value = "/", produces={"application/json; charset=UTF-8"})
-    public String  getBook(HttpServletResponse resp) throws JsonProcessingException {
-        String jsonInString = mapper.writeValueAsString(livreService.getBook());
-        resp.setStatus(200);
+    public String  getBook(@RequestParam String token, HttpServletResponse resp) throws JsonProcessingException {
+        token = (token != null) ? token : "";
+        boolean isConnect = userService.isValidToken(token);
+        String jsonInString = "";
+        if(isConnect) {
+            jsonInString = mapper.writeValueAsString(livreService.getBook());
+            resp.setStatus(200);
+        }
+        else {
+            jsonInString = mapper.writeValueAsString("");
+        }
         return jsonInString;
     }
     @GetMapping(value = "/search", produces={"application/json; charset=UTF-8"})
     public String searchBook(@RequestParam Map<String, String> info) throws JsonProcessingException {
-        String jsonInString = mapper.writeValueAsString(livreService.search(info));
+        String token = info.get("token");
+        token = (token != null) ? token : "";
+        boolean isConnect = userService.isValidToken(token);
+        String jsonInString = "";
+        if(isConnect)
+            jsonInString = mapper.writeValueAsString(livreService.search(info));
+        else
+            jsonInString = mapper.writeValueAsString("");
         return jsonInString;
     }
 
     @GetMapping(value = "/pret", produces={"application/json; charset=UTF-8"})
-    public String pret() throws JsonProcessingException {
-        // recuperation de l'id
-        MyUserDetails infoUser = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String jsonInString = mapper.writeValueAsString(pretService.getPretByUser(infoUser.getUsername()));
+    public String pret(@RequestParam String token) throws JsonProcessingException {
+        token = (token != null) ? token : "";
+        boolean isConnect = userService.isValidToken(token);
+        String jsonInString = "";
+        if(isConnect) {
+            mapper = JsonMapper.builder()
+                    .addModule(new JavaTimeModule())
+                    .build();
+            String mail = userService.getUserByToken(token).getEmail();
+            jsonInString = mapper.writeValueAsString(pretService.getPretByUser(mail));
+        }else
+            jsonInString = mapper.writeValueAsString("");
         return jsonInString;
     }
 
     @PatchMapping(value = "/pret", produces={"application/json; charset=UTF-8"})
-   public String continuePret(@RequestParam String idPret, HttpServletResponse resp) throws JsonProcessingException {
-        // recuperation de l'id
-        MyUserDetails infoUser = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        boolean renouvellement = pretService.updatePret(infoUser.getUsername(), idPret);
+   public String continuePret(@RequestParam Map<String, String> info, HttpServletResponse resp) throws JsonProcessingException {
+        String token = info.get("token");
+        token = (token != null) ? token : "";
         HashMap<String, String> ret = new HashMap<>();
-       if (renouvellement) {
-           resp.setStatus(200);
-           ret.put("Result", "success");
-           return mapper.writeValueAsString(ret);
-       }
-       else {
-           resp.setStatus(403);
-           ret.put("Result", "failure");
-           return mapper.writeValueAsString(ret);
-       }
+        boolean isConnect = userService.isValidToken(token);
+        if (isConnect){
+            String mail = userService.getUserByToken(token).getEmail();
+            boolean renouvellement = pretService.updatePret(mail, info.get("idPret"));
+            if (renouvellement) {
+                resp.setStatus(200);
+                ret.put("Result", "success");
+                return mapper.writeValueAsString(ret);
+            }
+        }
+        resp.setStatus(403);
+        ret.put("Result", "failure");
+        return mapper.writeValueAsString(ret);
     }
 
     @PostMapping(value = "/create", produces={"application/json; charset=UTF-8"})
     public String createUser(@RequestBody Map<String, String> info) throws JsonProcessingException {
         boolean create = userService.createUser(info);
+
         if(!create){
             return mapper.writeValueAsString("KO");
         }
@@ -148,24 +162,41 @@ public class MainController {
     }
 
     @GetMapping("/info")
-    public Utilisateur infoUser(){
+    public Utilisateur infoUser(@RequestParam String token){
         // recuperation de l'id
-        MyUserDetails infoUser = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Utilisateur user = userService.getUser(infoUser.getUsername());
-        user.setMdp("");
-        return user;
+        token = (token != null) ? token : "";
+        HashMap<String, String> ret = new HashMap<>();
+        boolean isConnect = userService.isValidToken(token);
+        if (isConnect){
+            Utilisateur user = userService.getUserByToken(token);
+            user.setValidity(null);
+            return user;
+        }
+        return null;
     }
 
     @PutMapping(value ="/update",  produces={"application/json; charset=UTF-8"})
     public String updateUser(@RequestBody Map<String, String> info) throws JsonProcessingException {
         // recuperation de l'id
-        MyUserDetails infoUser = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String resultat = userService.updateUser(info, infoUser.getUsername());
-        int code = Integer.parseInt(resultat.split(";")[0]);
-        resultat = resultat.split(";")[1];
-         if (code == 2)
-             infoUser.setUsername(info.get("mail"));
-         return mapper.writeValueAsString(resultat);
+        String token = info.get("token");
+        HashMap<String, String> ret = new HashMap<>();
+        token = (token != null) ? token : "";
+        boolean isConnect = userService.isValidToken(token);
+        if (isConnect){
+            Utilisateur infoUser = userService.getUserByToken(token);
+            String t = infoUser.getHash();
+            String resultats = userService.updateUser(info, infoUser.getEmail(), infoUser);
+            int code = Integer.parseInt(resultats.split(";")[0]);
+            String resultat = resultats.split(";")[1];
+            log.info(resultat);
+            if (code == 2)
+                infoUser.setEmail(info.get("mail"));
+            if (code > 0)
+                token = resultats.split(";")[2];
+            ret.put("token", token);
+            return mapper.writeValueAsString(ret);
+        }
+        return mapper.writeValueAsString("Erreur");
     }
     @GetMapping("/batch")
     public List<HashMap<String, String>> batch(@RequestParam String username, @RequestParam String password){

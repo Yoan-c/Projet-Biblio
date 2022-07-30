@@ -8,4 +8,7 @@ import org.springframework.data.repository.query.Param;
 public interface IUtilisateurRepository extends JpaRepository<Utilisateur, Long> {
     @Query("select u from Utilisateur u where u.email = :email")
     public Utilisateur getUtilisateurByMail(@Param("email")String email);
+    @Query("select u from Utilisateur u where u.hash = :hash")
+    public Utilisateur getUtilisateurByToken(@Param("hash")String hash);
+
 }
