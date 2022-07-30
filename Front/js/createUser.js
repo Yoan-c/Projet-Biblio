@@ -25,9 +25,8 @@ function createUser() {
         .then(res => res.json())
         .then(data => {
             let msg = document.getElementById("msg_creat")
-            if (data && data === "OK") {
+            if (data[0].response === "success")
                 msg.textContent = "Le compte a été crée avec un succes";
-            }
             else {
                 msg.textContent = "Une erreur est survenu lors de la creation du compte"
             }

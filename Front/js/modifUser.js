@@ -4,7 +4,11 @@ window.onload = () => {
     })
         .then(res => res.json())
         .then(data => {
-            FillInfoUserModif(data)
+            if (data[0].response === "success")
+                FillInfoUserModif(JSON.parse(data[0].data));
+            else {
+                getConnectionPage()
+            }
         })
         .catch(err => {
             getConnectionPage()
@@ -65,15 +69,18 @@ function updateUser(nom, prenom, mail, mdp, mdpConfirm) {
     })
         .then(res => res.json())
         .then(data => {
-            if (data.result.indexOf("Erreur") > -1)
-                setmessageErrorModif(data)
-            else {
-                setCookie("token", data.token)
-                document.location.href = "./modifUser.html";
+            if (data[0].response === "success") {
+                let token = data[0].token;
+                console.log("data ", token, " token " + JSON.stringify(data))
+                setCookie("token", token)
+                document.location.href = "./infoUser.html";
+            } else {
+                setmessageErrorModif(JSON.parse(data[0].data));
             }
 
         })
         .catch(err => {
+            console.log("modif user " + err);
             getConnectionPage()
         })
 }

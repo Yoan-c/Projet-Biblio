@@ -127,3 +127,20 @@ function getCookie(cName) {
     })
     return res;
 }
+
+let menuMobile = document.getElementById("menu");
+let topMenuMobile = document.getElementById("top_menu");
+menuMobile.addEventListener("click", (e) => {
+    is_slide = topMenuMobile.classList.contains("slidein");
+    let classN = "top_menu";
+    topMenuMobile.setAttribute('class', (is_slide) ? classN + " slideout" : classN + " slidein");
+});
+window.addEventListener('resize', checkMenu);
+function checkMenu() {
+    let windowHeight = window.innerHeight;
+    if (windowHeight > 700 && (topMenuMobile.classList.contains("slidein") || topMenuMobile.classList.contains("slideout"))) {
+        let classN = "top_menu";
+        topMenuMobile.setAttribute('class', classN);
+    }
+
+}

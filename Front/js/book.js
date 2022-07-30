@@ -5,10 +5,15 @@ window.onload = () => {
   })
     .then(res => res.json())
     .then(data => {
-      formatData(data);
+      if (data[0].response === "success")
+        formatData(JSON.parse(data[0].data));
+      else {
+        getConnectionPage()
+      }
     })
     .catch(err => {
       getConnectionPage()
+      console.log("book " + err)
     })
 }
 

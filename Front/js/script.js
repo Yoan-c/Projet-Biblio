@@ -1,5 +1,5 @@
-//let PATH = "http://localhost:81/";
-let PATH = "https://bibliostudi.herokuapp.com/";
+let PATH = "http://localhost:81/";
+//let PATH = "https://bibliostudi.herokuapp.com/";
 function getConnectionPage() {
   document.location.href = "./connexion.html"
 }
@@ -9,7 +9,6 @@ function ConnectApi(mail, password, divErr) {
     body: 'username=' + mail + '&password=' + password,
     headers: {
       'Content-type': 'application/x-www-form-urlencoded',
-      //'Access-Control-Allow-Origin': "https://bibliostudi.000webhostapp.com/"
     },
   })
     .then(res => res.json())
@@ -19,9 +18,6 @@ function ConnectApi(mail, password, divErr) {
         setCookie("token", data[0].token)
         document.location.href = "./book.html"
       }
-
-      else if (data[0].response === "relance")
-        document.location.href = "./relance.html"
       else {
         divErr.textContent = "Erreur : mail / mot de passe invalide"
       }
@@ -37,7 +33,7 @@ function DeconnectApi() {
     .finally(() => {
       setTimeout(() => {
         getConnectionPage()
-      }, 4000);
+      }, 2500);
     })
 
 }
@@ -82,7 +78,11 @@ function getSearch(data) {
   })
     .then(resp => resp.json())
     .then((data) => {
-      createDom(data);
+      if (data[0].response === "success")
+        createDom(JSON.parse(data[0].data));
+      else {
+        getConnectionPage()
+      }
     })
     .catch(err => {
       console.log("err search " + err)
@@ -152,7 +152,7 @@ function Pro_book(isbn) {
   })
     .then(resp => resp.json())
     .then((data) => {
-      if (data.Result == "success") {
+      if (data[0].response == "success") {
         let btn = document.getElementById("btn_reserve" + isbn);
         btn.classList.remove("active_lend")
         btn.classList.add("inactive_lend")

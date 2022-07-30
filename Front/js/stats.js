@@ -4,10 +4,14 @@ window.onload = () => {
     })
         .then(res => res.json())
         .then(data => {
-            setStatsData(data);
+            if (data[0].response === "success")
+                setStatsData(JSON.parse(data[0].data));
+            else {
+                getConnectionPage()
+            }
         })
         .catch(err => {
-            console.log("err book " + err);
+            console.log("err stat " + err);
             getConnectionPage()
         })
 }

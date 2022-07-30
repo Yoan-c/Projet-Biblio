@@ -55,70 +55,88 @@ public class MainController {
     private ObjectMapper mapper = new ObjectMapper();
 
 
+
     Logger log = Logger.getLogger("");
 
     @PostMapping("/connexion")
     public String v2Login(@RequestParam Map<String, String> info , HttpServletRequest req, HttpServletResponse resp)
             throws JsonProcessingException {
-        List<Map<String, String>> ret = new ArrayList<>();
-        Map<String, String> retM= new HashMap<>();
+        List<Map<String, String>> result = new ArrayList<>();
+        Map<String, String> resultMap= new HashMap<>();
         String mail = info.get("username");
         String mdp = info.get("password");
         boolean isConnect = userService.connexionUser(mail, mdp);
         if(isConnect){
-            retM.put("response", "success");
-            retM.put("token", userService.getHashUser(mail));
-            ret.add(retM);
+            resultMap.put("response", "success");
+            resultMap.put("token", userService.getHashUser(mail));
+            result.add(resultMap);
         }
         else {
-            retM.put("response", "failed");
-            ret.add(retM);
+            resultMap.put("response", "failed");
+            result.add(resultMap);
         }
         resp.setStatus(HttpStatus.OK.value());
 
-        return mapper.writeValueAsString(ret);
+        return mapper.writeValueAsString(result);
     }
     @GetMapping("/deconnexion")
     public String deconnexion(@RequestParam String token, HttpServletResponse resp) throws JsonProcessingException, ServletException {
-        List<Map<String, String>> ret = new ArrayList<>();
-        Map<String, String> retM= new HashMap<>();
         boolean isDeconnect = userService.deconnexion(token);
+        List<Map<String, String>> result = new ArrayList<>();
+        Map<String, String> resultMap= new HashMap<>();
         String response = (isDeconnect)? "success" : "failed";
-        retM.put("response", response);
-        ret.add(retM);
-        return mapper.writeValueAsString(ret);
+        resultMap.put("response", response);
+        result.add(resultMap);
+        return mapper.writeValueAsString(result);
     }
     @GetMapping(value = "/", produces={"application/json; charset=UTF-8"})
     public String  getBook(@RequestParam String token, HttpServletResponse resp) throws JsonProcessingException {
         token = (token != null) ? token : "";
+        List<Map<String, String>> result = new ArrayList<>();
+        Map<String, String> resultMap= new HashMap<>();
         boolean isConnect = userService.isValidToken(token);
         String jsonInString = "";
         if(isConnect) {
             jsonInString = mapper.writeValueAsString(livreService.getBook());
+            resultMap.put("data", jsonInString);
+            resultMap.put("response", "success");
             resp.setStatus(200);
         }
         else {
             jsonInString = mapper.writeValueAsString("");
+            resultMap.put("response", "failed");
         }
-        return jsonInString;
+        resultMap.put("data", jsonInString);
+        result.add(resultMap);
+        return mapper.writeValueAsString(result);
     }
     @GetMapping(value = "/search", produces={"application/json; charset=UTF-8"})
     public String searchBook(@RequestParam Map<String, String> info) throws JsonProcessingException {
         String token = info.get("token");
         token = (token != null) ? token : "";
+        List<Map<String, String>> result = new ArrayList<>();
+        Map<String, String> resultMap= new HashMap<>();
         boolean isConnect = userService.isValidToken(token);
         String jsonInString = "";
-        if(isConnect)
+        if(isConnect){
+            resultMap.put("response", "success");
             jsonInString = mapper.writeValueAsString(livreService.search(info));
-        else
+        }
+        else{
+            resultMap.put("response", "failed");
             jsonInString = mapper.writeValueAsString("");
-        return jsonInString;
+        }
+        resultMap.put("data", jsonInString);
+        result.add(resultMap);
+        return mapper.writeValueAsString(result);
     }
 
     @GetMapping(value = "/pret", produces={"application/json; charset=UTF-8"})
     public String pret(@RequestParam String token) throws JsonProcessingException {
         token = (token != null) ? token : "";
         boolean isConnect = userService.isValidToken(token);
+        List<Map<String, String>> result = new ArrayList<>();
+        Map<String, String> resultMap= new HashMap<>();
         String jsonInString = "";
         if(isConnect) {
             mapper = JsonMapper.builder()
@@ -126,15 +144,22 @@ public class MainController {
                     .build();
             String mail = userService.getUserByToken(token).getEmail();
             jsonInString = mapper.writeValueAsString(pretService.getPretByUser(mail));
-        }else
+            resultMap.put("response", "success");
+        }else {
+            resultMap.put("response", "failed");
             jsonInString = mapper.writeValueAsString("");
-        return jsonInString;
+        }
+        resultMap.put("data", jsonInString);
+        result.add(resultMap);
+        return mapper.writeValueAsString(result);
     }
 
     @PatchMapping(value = "/pret", produces={"application/json; charset=UTF-8"})
    public String continuePret(@RequestParam Map<String, String> info, HttpServletResponse resp) throws JsonProcessingException {
         String token = info.get("token");
         token = (token != null) ? token : "";
+        List<Map<String, String>> result = new ArrayList<>();
+        Map<String, String> resultMap= new HashMap<>();
         HashMap<String, String> ret = new HashMap<>();
         boolean isConnect = userService.isValidToken(token);
         if (isConnect){
@@ -142,44 +167,60 @@ public class MainController {
             boolean renouvellement = pretService.updatePret(mail, info.get("idPret"));
             if (renouvellement) {
                 resp.setStatus(200);
-                ret.put("Result", "success");
-                return mapper.writeValueAsString(ret);
+                resultMap.put("response", "success");
+                resultMap.put("data", mapper.writeValueAsString(renouvellement));
+                result.add(resultMap);
+                return mapper.writeValueAsString(result);
             }
         }
         resp.setStatus(403);
-        ret.put("Result", "failure");
-        return mapper.writeValueAsString(ret);
+        resultMap.put("response", "failure");
+        result.add(resultMap);
+        return mapper.writeValueAsString(result);
     }
 
     @PostMapping(value = "/create", produces={"application/json; charset=UTF-8"})
     public String createUser(@RequestBody Map<String, String> info) throws JsonProcessingException {
         boolean create = userService.createUser(info);
-
+        List<Map<String, String>> result = new ArrayList<>();
+        Map<String, String> resultMap= new HashMap<>();
         if(!create){
-            return mapper.writeValueAsString("KO");
+            resultMap.put("response", "success");
+            resultMap.put("data", mapper.writeValueAsString(create));
+            result.add(resultMap);
+            return mapper.writeValueAsString(result);
         }
-        return mapper.writeValueAsString("OK");
+        resultMap.put("response", "failed");
+        result.add(resultMap);
+        return mapper.writeValueAsString(result);
     }
 
     @GetMapping("/info")
-    public Utilisateur infoUser(@RequestParam String token){
+    public String infoUser(@RequestParam String token) throws JsonProcessingException {
         // recuperation de l'id
         token = (token != null) ? token : "";
-        HashMap<String, String> ret = new HashMap<>();
+        List<Map<String, String>> result = new ArrayList<>();
+        Map<String, String> resultMap= new HashMap<>();
         boolean isConnect = userService.isValidToken(token);
         if (isConnect){
             Utilisateur user = userService.getUserByToken(token);
             user.setValidity(null);
-            return user;
+            resultMap.put("response", "success");
+            resultMap.put("data", mapper.writeValueAsString(user));
+            result.add(resultMap);
+            return mapper.writeValueAsString(result);
         }
-        return null;
+        resultMap.put("response", "failed");
+        result.add(resultMap);
+        return mapper.writeValueAsString(result);
     }
 
     @PutMapping(value ="/update",  produces={"application/json; charset=UTF-8"})
     public String updateUser(@RequestBody Map<String, String> info) throws JsonProcessingException {
         // recuperation de l'id
         String token = info.get("token");
-        HashMap<String, String> ret = new HashMap<>();
+        List<Map<String, String>> result = new ArrayList<>();
+        Map<String, String> resultMap= new HashMap<>();
         token = (token != null) ? token : "";
         boolean isConnect = userService.isValidToken(token);
         if (isConnect){
@@ -188,15 +229,19 @@ public class MainController {
             String resultats = userService.updateUser(info, infoUser.getEmail(), infoUser);
             int code = Integer.parseInt(resultats.split(";")[0]);
             String resultat = resultats.split(";")[1];
-            log.info(resultat);
             if (code == 2)
                 infoUser.setEmail(info.get("mail"));
             if (code > 0)
                 token = resultats.split(";")[2];
-            ret.put("token", token);
-            return mapper.writeValueAsString(ret);
+            resultMap.put("response", "success");
+            resultMap.put("token", token);
+            resultMap.put("data", resultat);
+            result.add(resultMap);
+            return mapper.writeValueAsString(result);
         }
-        return mapper.writeValueAsString("Erreur");
+        resultMap.put("response", "failed");
+        result.add(resultMap);
+        return mapper.writeValueAsString(result);
     }
     @GetMapping("/batch")
     public List<HashMap<String, String>> batch(@RequestParam String username, @RequestParam String password){
@@ -204,8 +249,19 @@ public class MainController {
     }
 
     @GetMapping(value ="/stats",  produces={"application/json; charset=UTF-8"})
-    public Map<String, Object> statsLend(){
-        return pretService.getStats();
+    public String statsLend(@RequestParam String token) throws JsonProcessingException {
+        boolean isConnect = userService.isValidToken(token);
+        List<Map<String, String>> result = new ArrayList<>();
+        Map<String, String> resultMap= new HashMap<>();
+        if (isConnect){
+            resultMap.put("response", "success");
+            resultMap.put("data", mapper.writeValueAsString(pretService.getStats()));
+        }
+        else{
+            resultMap.put("response", "failed");
+        }
+        result.add(resultMap);
+        return mapper.writeValueAsString(result);
     }
 
     @RequestMapping(value = "/images/{name}", method = RequestMethod.GET,

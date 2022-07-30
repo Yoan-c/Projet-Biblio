@@ -4,7 +4,12 @@ window.onload = () => {
     })
         .then(res => res.json())
         .then(data => {
-            FillInfoUser(data)
+
+            if (data[0].response === "success")
+                FillInfoUser(JSON.parse(data[0].data));
+            else {
+                getConnectionPage()
+            }
         })
         .catch(err => {
             getConnectionPage()

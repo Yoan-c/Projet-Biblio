@@ -5,10 +5,17 @@ window.onload = () => {
     })
         .then(res => res.json())
         .then(data => {
-            if (data.length > 0)
-                showLend(data)
-            else
-                showNoLend()
+            if (data[0].response === "success") {
+                data = JSON.parse(data[0].data);
+                if (data.length > 0)
+                    showLend(data);
+                else
+                    showNoLend();
+            }
+            else {
+                getConnectionPage();
+            }
+
         })
         .catch(err => {
             getConnectionPage();
