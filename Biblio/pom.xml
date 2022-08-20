@@ -81,6 +81,7 @@
             <version>3.0.0</version>
             <type>maven-plugin</type>
         </dependency>
+
         <!-- Thanks for using https://jar-download.com -->
 
     </dependencies>
