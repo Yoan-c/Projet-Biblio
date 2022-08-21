@@ -221,5 +221,15 @@ public class UtilisateurTest {
         UtilisateurService utilisateurService = new UtilisateurService();
         assertFalse(utilisateurService.verifData("   "));
     }
+    @Test
+    void verifTokenTest(){
+        boolean t = utilisateurService.isValidToken("test");
+        assertFalse(t);
+    }
+    @Test
+    void getHashTest(){
+        String hash = utilisateurService.getHashUser("test@gmail.com");
+        assertNotNull(hash);
+    }
 
 }

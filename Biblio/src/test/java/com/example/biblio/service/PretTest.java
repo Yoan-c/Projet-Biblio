@@ -57,4 +57,5 @@ public class PretTest {
         List<HashMap<String, String>> lstPret = pretService.relancePret("admin", "admin");
         assertEquals("test@gmail.com", lstPret.get(0).get("email"));
     }
+
 }
